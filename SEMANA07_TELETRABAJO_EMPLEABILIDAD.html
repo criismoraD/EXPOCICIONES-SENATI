@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evolución de la etiqueta profesional en el teletrabajo</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:#1f3a2c;background-image:radial-gradient(circle at 30% 20%,#2c5140 0,#1a3226 70%);font-family:'Patrick Hand',cursive;display:flex;align-items:center;justify-content:center}
+.board{position:absolute;inset:0;border:18px solid #7a4a22;box-shadow:inset 0 0 60px #0008}
+.chalk{position:absolute;color:#fff9;font-family:'Caveat Brush';font-size:2rem;transform:rotate(-4deg)}
+.paper{position:relative;width:min(94vw,150vh);height:min(88vh,62vw);background:#fdfbf0;background-image:repeating-linear-gradient(0deg,transparent 0 38px,#cfe3f5 38px 40px);box-shadow:6px 10px 25px #000a;transform:rotate(-.6deg);border-radius:4px 10px 6px 12px/10px 4px 12px 6px}
+.tape{position:absolute;width:110px;height:34px;background:#ffe89acc;box-shadow:0 1px 3px #0003;z-index:5}
+svg#map{width:100%;height:100%;overflow:visible}
+.title{font-family:'Caveat Brush';font-size:2.1rem;fill:#222}
+.lbl{font-family:'Caveat Brush';font-size:1.75rem;fill:#111;pointer-events:none}
+.node{cursor:pointer;transition:transform .35s;transform-box:fill-box;transform-origin:center}
+.node:hover{transform:scale(1.08)}
+.draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:d 2s forwards}
+@keyframes d{to{stroke-dashoffset:0}}
+.pop{opacity:0;animation:p .6s forwards}
+@keyframes p{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+.float{animation:f 3s ease-in-out infinite}
+@keyframes f{50%{transform:translateY(-6px)}}
+#zoom{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:50}
+#zoom.on{display:flex}
+.card{width:min(85vw,900px);max-height:86vh;background:#fdfbf0;padding:2rem 2.5rem;border:4px solid #222;border-radius:20px 8px 24px 10px/10px 24px 8px 20px;box-shadow:10px 10px 0 var(--c);animation:zin .4s cubic-bezier(.3,1.6,.5,1);position:relative}
+@keyframes zin{from{transform:scale(.2) rotate(-10deg);opacity:0}}
+.card h2{font-family:'Caveat Brush';font-size:3rem;color:var(--c);line-height:1}
+.card li{font-size:1.7rem;margin:.5rem 0;list-style:none}
+.card li::before{content:"✎ ";color:var(--c)}
+.card img{width:170px;height:170px;object-fit:cover;border:6px solid #fff;box-shadow:3px 4px 10px #0005;transform:rotate(4deg);float:right;margin:0 0 1rem 1rem}
+.x{position:absolute;top:10px;right:18px;font-size:2.5rem;cursor:pointer;font-family:'Caveat Brush'}
+.hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:'Caveat Brush';font-size:1.4rem;color:#e63946}
+</style>
+</head>
+<body>
+<div class="board"></div>
+<div class="chalk" style="top:3%;left:3%">Clase de hoy ✓</div>
+<div class="chalk" style="bottom:3%;right:4%">💻 + 🏠 = 🤝</div>
+<div class="paper">
+  <div class="tape" style="top:-14px;left:-30px;transform:rotate(-35deg)"></div>
+  <div class="tape" style="top:-14px;right:-30px;transform:rotate(35deg)"></div>
+  <div class="tape" style="bottom:-14px;left:-30px;transform:rotate(35deg)"></div>
+  <div class="tape" style="bottom:-14px;right:-30px;transform:rotate(-35deg)"></div>
+  <svg id="map" viewBox="0 0 1400 800">
+    <defs>
+      <filter id="rough"><feTurbulence baseFrequency=".03" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5"/></filter>
+    </defs>
+    <g id="links" filter="url(#rough)"></g>
+    <g id="nodes"></g>
+  </svg>
+  <div class="hint">👆 toca una burbuja para hacer zoom</div>
+</div>
+
+<div id="zoom" onclick="if(event.target===this)cerrar()"><div class="card" id="card"></div></div>
+
+<script>
+const C={x:700,y:400};
+const data=[
+{t:"Antes 2020",e:"🏢",c:"#e63946",img:"https://images.unsplash.com/photo-1497366216548-37526070297c?w=400",
+ p:["Teletrabajo = excepción","Correo formal y teléfono","Etiqueta = traje y oficina","Presencia física = compromiso"]},
+{t:"Pandemia",e:"🦠",c:"#f77f00",img:"https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400",
+ p:["Salto masivo a casa","Improvisación total","Niños y mascotas en cámara","Nace la 'netiqueta' urgente"]},
+{t:"Videollamadas",e:"🎥",c:"#fcbf49",img:"https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400",
+ p:["Cámara encendida si se pide","Micrófono en silencio","Fondo limpio o virtual","Puntualidad digital"]},
+{t:"Comunicación",e:"💬",c:"#2a9d8f",img:"https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400",
+ p:["Mensajes claros y breves","Tono amable: sin gritos EN MAYÚSCULAS","Emojis con moderación","Responder en tiempos razonables"]},
+{t:"Límites",e:"⏰",c:"#4361ee",img:"https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400",
+ p:["Derecho a desconexión","Respetar horarios y zonas","Estados: disponible / ocupado","No mensajes a medianoche"]},
+{t:"Imagen",e:"👔",c:"#9d4edd",img:"https://images.unsplash.com/photo-1616587226960-4a03badbe8bf?w=400",
+ p:["Vestimenta adecuada (arriba y abajo 😉)","Buena luz y encuadre","Espacio ordenado","Identidad digital cuidada"]},
+{t:"Futuro híbrido",e:"🚀",c:"#f72585",img:"https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400",
+ p:["Oficina + casa combinadas","Inclusión de todos en reuniones","IA y nuevas herramientas","Confianza por resultados"]}
+];
+const L=document.getElementById('links'),N=document.getElementById('nodes'),ns="http://www.w3.org/2000/svg";
+const el=(t,a)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+function blob(cx,cy,r){let d="";for(let i=0;i<=12;i++){const a=i/12*Math.PI*2,rr=r*(0.92+Math.random()*.14);d+=(i?"L":"M")+(cx+Math.cos(a)*rr)+" "+(cy+Math.sin(a)*rr*.82)}return d+"Z"}
+// voronoi-like background cells
+for(let i=0;i<7;i++){const a=i/7*Math.PI*2-Math.PI/2,a2=(i+1)/7*Math.PI*2-Math.PI/2;
+ L.appendChild(el('path',{d:`M${C.x} ${C.y}L${C.x+Math.cos(a)*900} ${C.y+Math.sin(a)*600}L${C.x+Math.cos(a2)*900} ${C.y+Math.sin(a2)*600}Z`,fill:data[i].c,opacity:.1,stroke:data[i].c,'stroke-width':2,'stroke-dasharray':'8 8'}))}
+data.forEach((d,i)=>{
+ const a=i/7*Math.PI*2-Math.PI/2+Math.PI/7,x=C.x+Math.cos(a)*470,y=C.y+Math.sin(a)*290;
+ const mx=(C.x+x)/2+Math.sin(a)*50,my=(C.y+y)/2-Math.cos(a)*50;
+ const ln=el('path',{d:`M${C.x} ${C.y}Q${mx} ${my} ${x} ${y}`,stroke:d.c,'stroke-width':9,fill:'none','stroke-linecap':'round',class:'draw'});
+ ln.style.animationDelay=(i*.15)+'s';L.appendChild(ln);
+ // fractal mini-bubbles
+ for(let k=0;k<3;k++){const b=a+(k-1)*.35,sx=C.x+Math.cos(b)*620,sy=C.y+Math.sin(b)*370;
+  if(sx>40&&sx<1360&&sy>30&&sy<770){L.appendChild(el('line',{x1:x,y1:y,x2:sx,y2:sy,stroke:d.c,'stroke-width':3}));
+  L.appendChild(el('circle',{cx:sx,cy:sy,r:14,fill:d.c,opacity:.6}))}}
+ const g=el('g',{class:'node'});g.style.animationDelay=(1+i*.15)+'s';
+ const w=el('g',{class:'pop'});w.style.animationDelay=(1+i*.15)+'s';w.style.transformOrigin=`${x}px ${y}px`;
+ const f=el('g',{class:'float'});f.style.animationDelay=i*.4+'s';
+ f.appendChild(el('path',{d:blob(x,y,105),fill:d.c,stroke:'#222','stroke-width':4,filter:'url(#rough)'}));
+ f.appendChild(el('path',{d:blob(x,y,85),fill:'#fff',opacity:.55}));
+ const em=el('text',{x,y:y-12,'text-anchor':'middle','font-size':46});em.textContent=d.e;f.appendChild(em);
+ const tx=el('text',{x,y:y+40,'text-anchor':'middle',class:'lbl'});tx.textContent=d.t;f.appendChild(tx);
+ w.appendChild(f);g.appendChild(w);g.onclick=()=>abrir(d);N.appendChild(g);
+});
+// centro
+const cg=el('g',{class:'node'});
+cg.appendChild(el('path',{d:blob(C.x,C.y,150),fill:'#ffd60a',stroke:'#222','stroke-width':5,filter:'url(#rough)'}));
+[["💻🏠",-50,56],["Etiqueta",5,0],["profesional en",42,0],["el teletrabajo",78,0]].forEach(([s,dy,fs])=>{const t=el('text',{x:C.x,y:C.y+dy,'text-anchor':'middle',class:'title'});if(fs)t.setAttribute('font-size',fs);t.textContent=s;cg.appendChild(t)});
+cg.onclick=()=>abrir({t:"¿Qué es?",c:"#e63946",img:"https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=400",p:["Normas de respeto y cortesía en el trabajo remoto","Evolucionó de la oficina a la pantalla","Clave: empatía, claridad y límites","Profesionalismo sin importar el lugar"]});
+N.appendChild(cg);
+function abrir(d){const c=document.getElementById('card');c.style.setProperty('--c',d.c);
+ c.innerHTML=`<span class="x" onclick="cerrar()">✖</span><h2>${d.e||'⭐'} ${d.t}</h2><img src="${d.img}" alt=""><ul style="margin-top:1rem">${d.p.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+ document.getElementById('zoom').classList.add('on')}
+function cerrar(){document.getElementById('zoom').classList.remove('on')}
+addEventListener('keydown',e=>e.key==='Escape'&&cerrar());
+</script>
+</body>
+</html>
