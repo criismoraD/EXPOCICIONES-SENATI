@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IoT en la Agricultura de Precisión</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--s1:#cfeaf2;--s2:#f1f8dc;--cb:#fffaf0;--ct:#2b2216;--ht:#1f5a30;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--s1:#0f2a2e;--s2:#1d3d26;--cb:#1f2f22;--ct:#f3ead5;--ht:#cfe9c4}}
+:root[data-theme="dark"]{--s1:#0f2a2e;--s2:#1d3d26;--cb:#1f2f22;--ct:#f3ead5;--ht:#cfe9c4}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:linear-gradient(180deg,var(--s1),var(--s2) 70%);font-family:'Fredoka','Trebuchet MS',system-ui,sans-serif}
+#m{display:block;width:100%;height:100%;overflow:visible}
+#m text{font-family:inherit;font-weight:600;pointer-events:none}
+.trunk{transform-origin:50% 100%;animation:grow 1.3s cubic-bezier(.3,.8,.3,1) backwards}
+.draw{stroke-dasharray:1;stroke-dashoffset:0;animation:draw 1s ease-out backwards;animation-delay:var(--d)}
+.pop{transform-box:fill-box;transform-origin:50% 50%;animation:pop .8s cubic-bezier(.2,1.5,.4,1) backwards var(--d),sway 5s ease-in-out calc(var(--d) + .8s) infinite alternate}
+.pop1{transform-box:fill-box;transform-origin:50% 50%;animation:pop .8s cubic-bezier(.2,1.5,.4,1) backwards var(--d)}
+.h{transform-box:fill-box;transform-origin:50% 50%;transition:transform .25s}
+[data-k]{cursor:pointer;pointer-events:all}
+[data-k]:hover>.h,[data-k]:focus-visible>.h{transform:scale(1.08)}
+[data-k]:focus{outline:none}
+.chip{transform-box:fill-box;transform-origin:50% 50%;opacity:0;transform:translateY(-18px) scale(.5);pointer-events:none;transition:opacity .3s,transform .4s cubic-bezier(.2,1.6,.4,1);transition-delay:calc(var(--j)*70ms)}
+.rg.open .chip{opacity:1;transform:none;pointer-events:all}
+.chip rect{transition:fill .2s}.chip:hover rect{fill:#fff6e0}
+.blade{transform-box:fill-box;transform-origin:50% 100%;animation:blade 3s ease-in-out infinite alternate}
+.rays{transform-box:fill-box;transform-origin:50% 50%;animation:spin 40s linear infinite}
+.fall{animation:fall var(--t) linear infinite;animation-delay:var(--w);opacity:.55}
+#hint2{transition:opacity .6s}#hint2.off{opacity:0}#hint2 text{fill:var(--ht)}
+#card{position:fixed;z-index:10;left:0;top:0;width:min(460px,calc(100vw - 24px));background:var(--cb);color:var(--ct);border:4px solid #3a8f3f;border-radius:22px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding-bottom:16px;overflow:hidden;font-size:21px;line-height:1.35;opacity:0;transform:translateY(8px) scale(.97);pointer-events:none;transition:opacity .18s,transform .18s}
+#card.on{opacity:1;transform:none;pointer-events:auto}
+#card img{display:block;width:100%;height:220px;object-fit:cover;background:#e6f2e1}
+#card h3{margin:12px 18px 4px;font-size:29px;line-height:1.1;font-weight:600}
+#card p{margin:0 18px;font-weight:500}
+#card a{display:inline-block;margin:12px 18px 0;padding:8px 18px;background:#2e7d32;color:#fff;border-radius:999px;text-decoration:none;font-weight:600}
+#card a:hover{background:#1f6b3a}
+#hint{display:none;position:fixed;left:0;right:0;bottom:12px;text-align:center;color:#fff;font-size:20px;text-shadow:0 1px 4px #000}
+@media (orientation:portrait){#hint{display:block}}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes draw{from{stroke-dashoffset:1}}
+@keyframes pop{from{transform:scale(0) rotate(-25deg)}}
+@keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+@keyframes blade{from{transform:skewX(-8deg)}to{transform:skewX(8deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fall{from{transform:translate(var(--x),-60px) rotate(0)}to{transform:translate(calc(var(--x) + 160px),980px) rotate(420deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg id="m" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa mental en forma de árbol: IoT en la Agricultura de Precisión">
+  <g id="sky"></g>
+  <g transform="translate(90 68)"><g class="rays" id="rays"></g><circle r="32" fill="#ffd54a"/></g>
+  <rect x="-3000" y="728" width="7600" height="3000" fill="#5a3a22"/>
+  <g id="soil"></g><g id="grass"></g><g id="roots"></g><g id="trunk"></g><g id="tree"></g><g id="dots"></g>
+  <g id="hint2"><text x="1590" y="38" text-anchor="end" font-size="23">Pasa el cursor o toca</text><text x="1590" y="67" text-anchor="end" font-size="23">hojas, frutos y raíces</text></g>
+</svg>
+<div id="card" role="dialog" aria-live="polite"></div>
+<div id="hint">Gira el teléfono para ver el árbol completo</div>
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+
+/* ---------- Contenido de las tarjetas ---------- */
+const INFO={
+iot:{t:'Internet de las Cosas (IoT)',i:'cloud',d:'Objetos del campo (sensores, collares, válvulas) conectados a internet que envían datos para decidir mejor.'},
+mon:{t:'Monitorización de cultivos',i:'soil',d:'Sensores, drones y satélites miden cómo está la planta y el suelo para actuar antes de que haya pérdidas.'},
+agua:{t:'Gestión del agua',i:'drop',d:'El riego se activa solo cuando la planta lo necesita. Se gasta menos agua y el cultivo crece mejor.'},
+gan:{t:'Ganadería inteligente',i:'cow',d:'Cada animal lleva un dispositivo que informa dónde está, qué hace y cómo está de salud.'},
+m1:{t:'Sensores de suelo y clima',i:'soil',d:'Estacas clavadas en la tierra miden humedad, temperatura y nutrientes, y envían los datos por radio al celular.'},
+m2:{t:'Drones y NDVI',i:'heat',d:'NDVI es un "índice de verdor". La cámara del dron mide cuánta luz infrarroja refleja la planta: si está sana refleja mucha. El mapa pinta de verde lo fuerte y de rojo lo débil, así ves dónde actuar.'},
+m3:{t:'Alertas de plagas y heladas',i:'wave',d:'Los sensores detectan frío extremo o exceso de humedad y avisan al agricultor por mensaje antes de que haya daño.'},
+m4:{t:'Caso: viñedos conectados',i:'soil',d:'Ejemplo típico: sensores de suelo y estaciones de clima en la parcela ayudan a decidir cuándo regar y cuándo tratar la vid.'},
+a1:{t:'Sensores de humedad',i:'soil',d:'Miden cuánta agua hay en el suelo a distintas profundidades. Si está seco, piden riego.'},
+a2:{t:'Válvulas automáticas',i:'drop',d:'Una válvula conectada abre o cierra el agua desde el celular, o sola según lo que digan los sensores.'},
+a3:{t:'Riego según el clima',i:'cloud',d:'Con datos de sol, viento y temperatura se calcula cuánta agua pierde la planta y se riega solo esa cantidad.'},
+a4:{t:'Caso: goteo en Israel',i:'drop',d:'Israel es referente mundial en riego por goteo: lleva el agua gota a gota hasta la raíz y la automatiza con sensores.'},
+g1:{t:'Collares GPS y de salud',i:'cow',d:'Un collar con panel solar y GPS indica dónde está cada vaca, su temperatura y cuánto mastica.'},
+g2:{t:'Alerta de enfermedades',i:'cow',d:'Si el animal come menos, se mueve distinto o sube su temperatura, la app avisa para revisarlo a tiempo.'},
+g3:{t:'Ordeño robotizado',i:'cow',d:'Un robot ordeña cuando la vaca quiere y registra la leche de cada animal.'},
+g4:{t:'Caso: Nueva Zelanda',i:'cow',d:'La empresa Halter usa collares que vibran y suenan para guiar a las vacas sin alambrados ("cercas virtuales"). Según Forbes, ya los usan unas 1.300 granjas.',l:'https://www.contextoganadero.com/cronica/con-31-anos-creo-una-empresa-de-collares-inteligentes-para-vacas-valorada-en-usd-1000-millones',lt:'Leer el caso Halter'},
+r1:{t:'Sensores y actuadores',i:'soil',d:'Los sensores miden (humedad, temperatura, ubicación). Los actuadores hacen algo con esa información: abrir una válvula o encender una bomba.'},
+r2:{t:'Conectividad',i:'wave',d:'Es el camino que recorren los datos desde el campo hasta internet. Cada tecnología sirve para algo distinto.'},
+r3:{t:'Nube e inteligencia artificial',i:'cloud',d:'Los datos se guardan en servidores de internet y la IA los analiza para recomendar qué hacer.'},
+c1:{t:'Humedad',i:'soil',d:'Mide cuánta agua tiene el suelo para saber cuándo regar.'},
+c2:{t:'pH y NPK',i:'soil',d:'Mide la acidez del suelo y sus nutrientes principales: nitrógeno (N), fósforo (P) y potasio (K).'},
+c3:{t:'GPS',i:'pin',d:'Ubica con precisión maquinaria, animales y parcelas.'},
+c4:{t:'LoRa',i:'wave',d:'Radio de largo alcance y muy bajo consumo. Llega a varios kilómetros en campo abierto y la batería puede durar años. Envía pocos datos: ideal para sensores.'},
+c5:{t:'5G',i:'wave',d:'Red móvil muy rápida y con poca demora. Sirve para drones, video y maquinaria autónoma.'},
+c6:{t:'Wi-Fi',i:'wave',d:'Red local de la finca o del establo. Alcance corto, pero económica y con buena velocidad.'},
+c7:{t:'Datos',i:'cloud',d:'Se guarda el historial de cada parcela y de cada animal para comparar entre temporadas.'},
+c8:{t:'Inteligencia artificial',i:'cloud',d:'Aprende de los datos y predice plagas, falta de agua en el cultivo o enfermedades en el ganado.'},
+c9:{t:'Apps',i:'pin',d:'El agricultor ve alertas y gráficos en su celular y toma decisiones desde cualquier lugar.'}
+};
+
+/* ---------- Fotos reales referentes por tarjeta ---------- */
+const U='?auto=format&fit=crop&w=800&q=60';
+const IMG={
+soil:'https://images.unsplash.com/photo-1611037500498-88243304bb11'+U,
+drop:'https://images.unsplash.com/photo-1755119902811-6eb8c693f037'+U,
+cow:'https://images.unsplash.com/photo-1500595046743-cd271d694d30'+U,
+cloud:'https://images.unsplash.com/photo-1625246333195-78d9c38ad449'+U,
+heat:'https://images.unsplash.com/photo-1509110646989-7ca4308edb3e'+U,
+wave:'https://images.unsplash.com/photo-1766454919974-b11628efdda1'+U,
+pin:'https://images.unsplash.com/photo-1500382017468-9049fed747ef'+U
+};
+const PHOTO={
+iot:'https://images.unsplash.com/photo-1451187580459-43490279c429'+U,
+mon:'https://images.unsplash.com/photo-1509110646989-7ca4308edb3e'+U,
+agua:'https://images.unsplash.com/photo-1755119902811-6eb8c693f037'+U,
+gan:'https://images.unsplash.com/photo-1500595046743-cd271d694d30'+U,
+m1:'https://images.unsplash.com/photo-1611037500498-88243304bb11'+U,
+m2:'https://images.unsplash.com/photo-1473968512647-3e447244af8f'+U,
+m3:'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b'+U,
+m4:'https://images.unsplash.com/photo-1755497901305-6d60606671eb'+U,
+a1:'https://images.unsplash.com/photo-1464226184884-fa280b87c399'+U,
+a2:'https://images.unsplash.com/photo-1625246333195-78d9c38ad449'+U,
+a3:'https://images.unsplash.com/photo-1500382017468-9049fed747ef'+U,
+a4:'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2'+U,
+g1:'https://images.unsplash.com/photo-1583788756448-6e726ac73772'+U,
+g2:'https://images.unsplash.com/photo-1666878125618-ed3dddd1ab36'+U,
+g3:'https://images.unsplash.com/photo-1440428099904-c6d459a7e7b5'+U,
+g4:'https://images.unsplash.com/photo-1596733430284-f7437764b1a9'+U,
+r1:'https://images.unsplash.com/photo-1518770660439-4636190af475'+U,
+r2:'https://images.unsplash.com/photo-1467932268859-422ba9924d04'+U,
+r3:'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'+U,
+c1:'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735'+U,
+c2:'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69'+U,
+c3:'https://images.unsplash.com/photo-1524661135-423995f22d0b'+U,
+c4:'https://images.unsplash.com/photo-1766454919974-b11628efdda1'+U,
+c5:'https://images.unsplash.com/photo-1660620949746-c0f2a54538ef'+U,
+c6:'https://images.unsplash.com/photo-1544197150-b99a580bb7a8'+U,
+c7:'https://images.unsplash.com/photo-1551288049-bebda4e38f71'+U,
+c8:'https://images.unsplash.com/photo-1620712943543-bcc4688e7485'+U,
+c9:'https://images.unsplash.com/photo-1605000797499-95a51c5269ae'+U
+};
+const IMG_ALT={
+soil:'Sensor de suelo en cultivo real',
+drop:'Riego por pivote en campos agrícolas',
+cow:'Vacas en pastoreo con collares GPS',
+cloud:'Tractor en campo inteligente conectado a la nube',
+heat:'Vista aérea de cultivo para mapa NDVI con dron',
+wave:'Antena de conectividad LoRa 5G en campo',
+pin:'Campo agrícola con ubicación GPS precisa'
+};
+const PHOTO_ALT={
+iot:'Red IoT global sobre el planeta',
+mon:'Monitoreo aéreo del cultivo con tractor',
+agua:'Gestión del agua con riego circular',
+gan:'Ganadería inteligente en pastoreo',
+m1:'Sensores de suelo y clima clavados en la tierra',
+m2:'Dron sobrevolando el campo',
+m3:'Alerta de tormenta helada sobre el cultivo',
+m4:'Viñedo conectado con hileras de vid',
+a1:'Manos tocando la humedad del suelo',
+a2:'Válvula y riego automático en campo',
+a3:'Riego según el clima soleado',
+a4:'Riego gota a gota en plántulas',
+g1:'Vaca con collar GPS en primer plano',
+g2:'Vacas en establo para alerta de salud',
+g3:'Ganado lechero para ordeño robotizado',
+g4:'Vaca marrón en pradera de Nueva Zelanda',
+r1:'Placa de sensores y actuadores',
+r2:'Torre satelital de conectividad nocturna',
+r3:'Nube y ciberseguridad de datos',
+c1:'Plántula en suelo húmedo al sol',
+c2:'Tubos de laboratorio pH y NPK',
+c3:'Mapa GPS con pin de ubicación',
+c4:'Torre de transmisión LoRa en campo agrícola',
+c5:'Torre alta de antena 5G',
+c6:'Cables de red Wi-Fi local',
+c7:'Panel de datos y gráficos',
+c8:'Inteligencia artificial y robot',
+c9:'Agricultor con tablet en el campo'
+};
+
+/* ---------- Fondo ---------- */
+let r='';for(let i=0;i<12;i++)r+=`<rect x="-4" y="-62" width="8" height="20" rx="4" fill="#ffd54a" transform="rotate(${i*30})"/>`;
+$('rays').innerHTML=r;
+let f='';const fc=['#6dbb52','#8bc34a','#e0a030','#4f9d4a'];
+for(let i=0;i<7;i++)f+=`<g class="fall" style="--x:${Math.round(rnd(20,1400))}px;--t:${Math.round(rnd(14,24))}s;--w:-${Math.round(rnd(0,18))}s"><path d="M0 0Q10-14 22 0Q10 14 0 0Z" fill="${fc[i%4]}"/></g>`;
+$('sky').innerHTML=f;
+let s='';for(let i=0;i<70;i++)s+=`<ellipse cx="${rnd(-200,1800)}" cy="${rnd(760,900)}" rx="${rnd(4,16)}" ry="${rnd(3,9)}" fill="${Math.random()<.5?'#47301c':'#7a5233'}"/>`;
+$('soil').innerHTML=s;
+let g='';for(let x=-200;x<1800;x+=24)g+=`<path class="blade" style="animation-delay:-${rnd(0,3).toFixed(2)}s" d="M${x} 732Q${x+3} 712 ${x+7} ${rnd(694,706).toFixed(0)}L${x+11} 732Z" fill="${Math.random()<.5?'#5ca03c':'#74b84a'}"/>`;
+$('grass').innerHTML='<rect x="-3000" y="726" width="7600" height="12" fill="#5ca03c"/>'+g;
+
+/* ---------- Raíces ---------- */
+const P=(d,w,dl)=>`<path class="draw" pathLength="1" style="--d:${dl}s" d="${d}" fill="none" stroke="#c49a63" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const half=
+ P('M792 776C700 774 600 788 492 804',15,.2)+P('M730 778C712 806 690 830 648 848',10,.5)+P('M648 848C630 858 612 860 590 856',6,.8)+
+ P('M660 786C640 770 618 764 590 762',7,.6)+P('M700 780C694 826 706 858 696 892',8,.7)+
+ P('M696 892l-14 6M696 892l12 6M648 848l-10 16M648 848l-6-14M590 762l-12-8M590 762l-12 10M590 856l-14 -8M590 856l-12 10',3,1);
+let rt=half+`<g transform="translate(1600 0) scale(-1 1)">${half}</g>`+P('M800 770V800',16,.2);
+const blob=(w,h)=>`M${-w/2} 0C${-w/2} ${-h*.75} ${-w*.25} ${-h/2} 0 ${-h/2}C${w*.3} ${-h*.55} ${w/2} ${-h*.65} ${w/2} 0C${w/2} ${h*.65} ${w*.2} ${h/2} ${-w*.05} ${h/2}C${-w*.35} ${h*.58} ${-w/2} ${h*.5} ${-w/2} 0Z`;
+const RS=[
+ {cx:305,y:800,w:380,L:['Sensores y','actuadores'],k:'r1',cy:872,C:[['c1','Humedad'],['c2','pH y NPK'],['c3','GPS']]},
+ {cx:800,y:826,w:290,L:['Nube e IA'],k:'r3',cy:878,C:[['c7','Datos'],['c8','IA'],['c9','Apps']]},
+ {cx:1295,y:800,w:380,L:['Conectividad','LoRa y 5G'],k:'r2',cy:872,C:[['c4','LoRa'],['c5','5G'],['c6','Wi-Fi']]}
+];
+RS.forEach((o,i)=>{
+ const h=o.L.length>1?76:58, d=(1+i*.2).toFixed(1);
+ rt+=`<g class="rg"><rect x="${o.cx-235}" y="${o.y-h/2-6}" width="470" height="${o.cy+26-(o.y-h/2-6)}" fill="transparent"/>
+ <g class="pop1" style="--d:${d}s"><g data-k="${o.k}" tabindex="0" transform="translate(${o.cx} ${o.y})"><g class="h"><path d="${blob(o.w,h)}" fill="#c68a4a" stroke="#7a4a22" stroke-width="4"/>`+
+ o.L.map((t,j)=>`<text y="${o.L.length>1?(j?18:-14):0}" dy="${o.L.length>1?'0':'.35em'}" text-anchor="middle" font-size="28" fill="#2e1a0c">${t}</text>`).join('')+`</g></g></g>`+
+ o.C.map(([k,t],j)=>`<g transform="translate(${o.cx+(j-1)*150} ${o.cy})"><g class="chip" style="--j:${j}" data-k="${k}" tabindex="0"><rect x="-70" y="-21" width="140" height="42" rx="21" fill="#ffe9c7" stroke="#8a5a2b" stroke-width="3"/><text dy=".35em" text-anchor="middle" font-size="25" fill="#3b2616">${t}</text></g></g>`).join('')+'</g>';
+});
+$('roots').innerHTML=rt;
+
+/* ---------- Tronco y ramas ---------- */
+const br=['M800 640C790 570 330 610 270 548','M800 640L800 548','M800 640C810 570 1270 610 1330 548'];
+let tr=`<path class="trunk" d="M716 782C762 705 772 660 780 596L820 596C828 660 838 705 884 782Z" fill="#6b4423"/><path class="trunk" d="M800 780C796 720 796 670 800 610" stroke="#8a5a2b" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+br.forEach((d,i)=>{tr+=`<path class="draw" pathLength="1" style="--d:${1.1+i*.15}s" d="${d}" fill="none" stroke="#6b4423" stroke-width="30" stroke-linecap="round"/>`});
+$('trunk').innerHTML=tr;
+
+/* ---------- Copa ---------- */
+const data=[
+ {cx:270,k:'mon',hub:['Monitorización','de cultivos'],L:[['m1','Sensores de suelo y clima'],['m2','Drones con cámaras NDVI'],['m3','Alertas de plagas y heladas'],['m4','Caso: viñedos conectados']]},
+ {cx:800,k:'agua',hub:['Gestión','del agua'],L:[['a1','Sensores de humedad'],['a2','Válvulas automáticas'],['a3','Riego según el clima'],['a4','Caso: goteo en Israel']]},
+ {cx:1330,k:'gan',hub:['Ganadería','inteligente'],L:[['g1','Collares GPS y de salud'],['g2','Alerta de enfermedades'],['g3','Ordeño robotizado'],['g4','Caso: Nueva Zelanda']]}
+];
+const greens=['#2e7d32','#3a8f3f','#1f6b3a','#2f8546'];
+const lp='M-195 0Q-160-36-100-33H100Q160-36 195 0Q160 36 100 33H-100Q-160 36-195 0Z';
+let t='';
+data.forEach((b,bi)=>{
+ t+=`<path class="draw" pathLength="1" style="--d:${2.1+bi*.2}s" d="M${b.cx} 460C${b.cx-14} 380 ${b.cx+14} 300 ${b.cx} 170" fill="none" stroke="#3f7d2a" stroke-width="10" stroke-linecap="round"/>`;
+ b.L.forEach(([k,txt],i)=>{
+  const fruit=i===3, x=b.cx+(i%2?48:-48), y=410-i*80, d=(2.6+bi*.2+i*.3).toFixed(2);
+  t+=`<g transform="translate(${x} ${y})"><g class="pop" style="--d:${d}s" data-k="${k}" tabindex="0"><g class="h"><path d="${lp}" fill="${fruit?'#f6c343':greens[(i+bi)%4]}" stroke="${fruit?'#c98a10':'#14502a'}" stroke-width="3"/><text dy=".35em" text-anchor="middle" font-size="26" fill="${fruit?'#3a2a10':'#fff'}">${txt}</text></g></g></g>`;
+ });
+ t+=`<g transform="translate(${b.cx} 500)"><g class="pop" style="--d:${1.9+bi*.2}s" data-k="${b.k}" tabindex="0"><g class="h"><rect x="-190" y="-44" width="380" height="88" rx="44" fill="#8a5a2b" stroke="#4a2d14" stroke-width="4"/><text y="-9" text-anchor="middle" font-size="33" fill="#fff0d2">${b.hub[0]}</text><text y="27" text-anchor="middle" font-size="33" fill="#fff0d2">${b.hub[1]}</text></g></g></g>`;
+});
+t+=`<g transform="translate(800 56)"><g class="pop" style="--d:3.4s" data-k="iot" tabindex="0"><g class="h"><rect x="-470" y="-38" width="940" height="76" rx="38" fill="#1b4d2e" stroke="#0e3320" stroke-width="4"/><text dy=".35em" text-anchor="middle" font-size="41" fill="#fdf3d0">IoT en la Agricultura de Precisión</text></g></g></g>`;
+$('tree').innerHTML=t;
+
+/* Datos viajando por el tronco */
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+ const ps=['M800 780L800 640C790 570 330 610 270 548','M800 780L800 548','M800 780L800 640C810 570 1270 610 1330 548'];
+ $('dots').innerHTML=ps.map((p,i)=>`<circle r="8" fill="#ffe27a" stroke="#fff6c2" stroke-width="3"><animateMotion dur="3.4s" begin="${4+i*.9}s" repeatCount="indefinite" path="${p}"/></circle>`).join('');
+}
+
+/* ---------- Tarjetas al pasar el cursor / tocar ---------- */
+const card=$('card');let timer;
+function show(el){
+ const k=el.dataset.k;const o=INFO[k];if(!o)return;
+ $('hint2').classList.add('off');
+ const src=PHOTO[k]||IMG[o.i];const alt=(PHOTO_ALT[k]||IMG_ALT[o.i]||o.t);
+ card.innerHTML=`<img src="${src}" alt="${alt}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"/><h3>${o.t}</h3><p>${o.d}</p>`+(o.l?`<a href="${o.l}" target="_blank" rel="noopener noreferrer">${o.lt||'Saber más'}</a>`:'');
+ const rc=el.getBoundingClientRect(),cw=card.offsetWidth,ch=card.offsetHeight;
+ const x=Math.max(8,Math.min(innerWidth-cw-8,rc.left+rc.width/2-cw/2));
+ const up=rc.top-ch-6;
+ const y=up>=8?up:(rc.bottom+6+ch<=innerHeight-8?rc.bottom+6:Math.max(8,innerHeight-ch-8));
+ card.style.left=x+'px';card.style.top=y+'px';card.classList.add('on');
+}
+function hideAll(){card.classList.remove('on');document.querySelectorAll('.rg.open').forEach(g=>g.classList.remove('open'))}
+document.addEventListener('mouseover',e=>{
+ clearTimeout(timer);
+ if(card.contains(e.target))return;
+ const rg=e.target.closest('.rg'),el=e.target.closest('[data-k]');
+ document.querySelectorAll('.rg.open').forEach(g=>g!==rg&&g.classList.remove('open'));
+ if(rg)rg.classList.add('open');
+ if(el)show(el);
+ else if(rg)timer=setTimeout(()=>card.classList.remove('on'),380);
+ else timer=setTimeout(hideAll,380);
+});
+document.addEventListener('focusin',e=>{const rg=e.target.closest('.rg'),el=e.target.closest('[data-k]');if(rg)rg.classList.add('open');if(el)show(el)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')hideAll()});
+</script>
+</body>
+</html>
