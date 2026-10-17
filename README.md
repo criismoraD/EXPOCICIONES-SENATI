@@ -6,13 +6,12 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 ---
 
-## 🚀 Exposición Destacada (Semana 05)
+## 🚀 Exposición Destacada (Semana 09)
 
 | Curso | Tema | Enlace Directo |
 | :--- | :--- | :--- |
-| **Seminario de Complementación** | Smart City · Ciudad Inteligente (IoT 🌐) | [Ver Exposición](./SEMANA5_SMARTCITY_SEMINARIO.html) |
-| **Soluciones IoT** | Riesgos IoT · Seguridad conectada (🔒) | [Ver Exposición](./SEMANA05_RIEZGOS_IOT_SOLUCIONES_IOT.html) |
-| **Empleabilidad** | Ética en el branding personal (🌟) | [Ver Exposición](./SEMANA05_ETICA_EN_EL_BRANDING_PERSONAL_EMPLEABILIDAD.html) |
+| **Empleabilidad** | Ciberseguridad y Ética · Ejemplo animado en RRHH | [Ver Exposición](./ciberseguridad_etica_ia_rrhh_EMPLEABILIDAD_SEMANA09.html) |
+| **Seminario** | Ramas en Git · Trabajo en equipo | [Ver Exposición](./RAMAS-GIT_SEMINARIO_SEMANA09.html) |
 
 ---
 
@@ -30,6 +29,8 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 Ubicadas en la carpeta [`ANTERIORES/`](./ANTERIORES/):
 
+- **Semana 08 - Seminario:** [IoT en la Agricultura de Precisión](./ANTERIORES/SEMANA08_IOT_AGRICULTURA_PRECISION_SEMINARIO.html)
+- **Semana 08 - Empleabilidad:** [Método STAR · Guía visual para entrevistas](./ANTERIORES/SEMANA08_mapa-star_IOT.html)
 - **Semana 05 - Seminario:** [Inmótica · Edificios que piensan](./ANTERIORES/SEMANA_05_INMOTICA_SEMINARIO.html)
 - **Semana 04 - Empleabilidad:** [Aprendizaje Ágil (SENATI BOT)](./ANTERIORES/SEMANA04_APRENDIZAJE_AGIL_EMPLEABILIDAD.html)
 - **Semana 04 - Seminario:** [Del Código al Mundo](./ANTERIORES/SEMANA04_PASOS_SEMINARIO.html)

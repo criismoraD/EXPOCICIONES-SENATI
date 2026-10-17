@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090f25">
+  <meta name="description" content="Mapa mental animado: seis nodos se iluminan en bucle mientras aparece en el centro un ejemplo de selección de personal con IA. Una sola vista, sin desplazamiento.">
+  <title>Ciberseguridad y Ética · Ejemplo animado en RRHH</title>
+  <style>
+:root {
+  color-scheme: dark;
+  --paper: #090f25;
+  --ink: #f3f7ff;
+  --cyber: #68e3ff;
+  --ethics: #dfb3ff;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body {
+  color: var(--ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(ellipse at 8% 48%, #063c5d65, transparent 45%),
+    radial-gradient(ellipse at 94% 42%, #52257c55, transparent 46%),
+    radial-gradient(ellipse at 50% 100%, #153a6155, transparent 60%), var(--paper);
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none;
+  background-image: linear-gradient(#6b92e00a 1px, transparent 1px), linear-gradient(90deg, #6b92e00a 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 90%);
+}
+button { font: inherit; -webkit-tap-highlight-color: transparent; }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+[hidden] { display: none !important; }
+.page {
+  position: relative; width: 100%; max-width: 1920px; height: 100vh; height: 100dvh;
+  margin: 0 auto; padding: clamp(18px, 2.2vw, 36px) clamp(22px, 3.1vw, 54px);
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(16px, 2.2vh, 26px);
+}
+.header { text-align: center; }
+h1 { margin: 0; font-size: clamp(30px, 3.05vw, 48px); font-weight: 780; line-height: 1.13; letter-spacing: -.045em; }
+.title-cyber { color: #69e3ff; }
+.title-join { color: #d8e2ff; font-size: .86em; }
+.title-ethics { color: #e8afff; }
+.subtitle { margin: 7px 0 0; font-size: clamp(22px, 1.8vw, 28px); line-height: 1.25; color: #c7d7f2; }
+.subtitle strong { color: #fff; }
+.map {
+  min-height: 0; position: relative; isolation: isolate; display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .96fr) minmax(0, 1fr);
+  grid-template-rows: 30px repeat(3, minmax(0, 1fr));
+  column-gap: clamp(24px, 2.65vw, 48px); row-gap: clamp(12px, 1.9vh, 22px);
+}
+.map::before {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background-image: radial-gradient(#8ba8e64d 1px, transparent 1px); background-size: 27px 27px; opacity: .4;
+  mask-image: radial-gradient(ellipse at center, black, transparent 76%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 76%);
+}
+.wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: -1; pointer-events: none; }
+.wire { fill: none; stroke-width: 2.5; opacity: .26; transition: opacity .4s, stroke-width .4s; }
+.wire.active { opacity: 1; stroke-width: 4; stroke-dasharray: 10 8; filter: drop-shadow(0 0 7px currentColor); animation: signal-flow 1.5s linear infinite; }
+.wire-dot { opacity: .5; }
+.wire-dot.active { opacity: 1; filter: drop-shadow(0 0 8px currentColor); }
+@keyframes signal-flow { to { stroke-dashoffset: -36; } }
+.section-label { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; font-size: clamp(18px, 1.45vw, 22px); font-weight: 750; letter-spacing: .07em; line-height: 1; }
+.section-label::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; box-shadow: 0 0 14px currentColor; }
+.section-label.cyber { color: var(--cyber); grid-column: 1; grid-row: 1; }
+.section-label.ethics { color: var(--ethics); grid-column: 3; grid-row: 1; }
+.node {
+  appearance: none; min-width: 0; min-height: 0; width: 100%; height: 100%; position: relative;
+  display: flex; flex-direction: column; justify-content: center; text-align: left;
+  color: var(--ink); background: linear-gradient(120deg, var(--surface), var(--deep));
+  border: 1.5px solid rgba(var(--rgb), .5); border-left: 5px solid var(--accent); border-radius: 22px;
+  padding: clamp(14px, 1.35vw, 23px) clamp(16px, 1.5vw, 26px);
+  box-shadow: 0 8px 22px #00000025, inset 0 1px 0 #ffffff0b;
+  cursor: pointer; transition: filter .45s, opacity .45s, box-shadow .45s, border-color .45s, transform .45s;
+}
+.node::after { content: ""; position: absolute; top: 12px; right: 12px; width: 17px; height: 17px; border-top: 1px solid var(--accent); border-right: 1px solid var(--accent); border-radius: 0 8px 0 0; opacity: .4; pointer-events: none; }
+.node:not(.is-active) { filter: saturate(.72) brightness(.82); opacity: .86; }
+.node:not(.is-active):hover { filter: saturate(1) brightness(1); opacity: 1; }
+.node.is-active {
+  border-color: var(--accent); opacity: 1; filter: brightness(1.1); transform: translateY(-1px);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 35px rgba(var(--rgb), .33);
+  animation: node-glow 2.5s ease-in-out infinite;
+}
+@keyframes node-glow {
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent), 0 0 26px rgba(var(--rgb), .24); }
+  50% { box-shadow: 0 0 0 2px var(--accent), 0 0 43px rgba(var(--rgb), .42); }
+}
+.node:focus-visible { outline-color: var(--accent); }
+.node-head { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.node-icon { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; color: #10213b; background: var(--accent); }
+.node-icon svg { width: 26px; height: 26px; }
+.node-title { color: var(--accent); font-size: clamp(22px, 1.8vw, 29px); line-height: 1.12; font-weight: 750; letter-spacing: -.025em; }
+.node-copy { display: block; margin-top: 10px; color: #f0f5ff; font-size: clamp(20px, 1.52vw, 25px); line-height: 1.34; }
+.node-copy .line { display: block; }
+.short-copy, .compact-copy, .short-title { display: none; }
+#privacy { grid-column: 1; grid-row: 2; --accent: #68e3ff; --rgb: 104,227,255; --surface: #10516c; --deep: #12334d; }
+#tools { grid-column: 1; grid-row: 3; --accent: #9fbaff; --rgb: 159,186,255; --surface: #293f7c; --deep: #1b2b50; }
+#prevention { grid-column: 1; grid-row: 4; --accent: #70f0c5; --rgb: 112,240,197; --surface: #155447; --deep: #123638; }
+#fairness { grid-column: 3; grid-row: 2; --accent: #dfb3ff; --rgb: 223,179,255; --surface: #563579; --deep: #302047; }
+#transparency { grid-column: 3; grid-row: 3; --accent: #ffacd3; --rgb: 255,172,211; --surface: #713850; --deep: #3b273f; }
+#human { grid-column: 3; grid-row: 4; --accent: #ffca86; --rgb: 255,202,134; --surface: #6b492c; --deep: #3d3033; }
+.hub {
+  --active: #68e3ff; --active-rgb: 104,227,255;
+  grid-column: 2; grid-row: 2 / 5; align-self: center; width: 100%; height: min(100%, 500px); min-height: 0;
+  position: relative; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 18px;
+  padding: clamp(20px, 1.8vw, 29px); border: 2px solid var(--active); border-radius: 30px;
+  color: #f8fbff; text-align: center; background: linear-gradient(150deg, #173254, #151b38);
+  box-shadow: 0 0 42px rgba(var(--active-rgb), .16), 0 18px 42px #00000030;
+  transition: border-color .45s, box-shadow .45s;
+}
+.hub::before { content: ""; position: absolute; inset: -11px; border: 1px dashed rgba(var(--active-rgb), .34); border-radius: 41px; z-index: -1; pointer-events: none; }
+.case-header h2 { margin: 0; font-size: clamp(28px, 2.4vw, 38px); line-height: 1.1; font-weight: 780; letter-spacing: -.035em; color: #fff; }
+.case-context { margin: 9px 0 0; color: #caddf5; font-size: clamp(20px, 1.55vw, 25px); line-height: 1.25; }
+.context-short { display: none; }
+.case-stage { min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
+.case-topic { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+.case-icon { flex-shrink: 0; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 13px; background: rgba(var(--active-rgb), .14); color: var(--active); }
+.case-icon svg { width: 28px; height: 28px; }
+.case-topic h3 { margin: 0; color: var(--active); font-size: clamp(23px, 1.9vw, 30px); font-weight: 750; line-height: 1.13; letter-spacing: -.025em; text-align: left; }
+.case-copy { margin: 0; color: #fff; font-size: clamp(22px, 1.85vw, 29px); line-height: 1.35; text-wrap: pretty; }
+.case-controls { min-width: 0; }
+.timeline { height: 5px; border-radius: 5px; background: #ffffff16; overflow: hidden; }
+.progress-fill { height: 100%; width: 100%; background: var(--active); transform: scaleX(0); transform-origin: left; box-shadow: 0 0 12px var(--active); }
+.control-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; min-height: 34px; }
+.step-count { color: var(--active); font-size: 21px; font-variant-numeric: tabular-nums; font-weight: 750; white-space: nowrap; }
+.play-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 34px; padding: 5px 9px; border: 1px solid #ffffff29; border-radius: 10px; background: #ffffff08; color: #e5efff; font-size: 18px; line-height: 1.1; cursor: pointer; }
+.play-toggle:hover { background: #ffffff13; }
+.play-toggle svg { flex-shrink: 0; width: 21px; height: 21px; }
+.play-toggle:focus-visible { outline-color: var(--active); outline-offset: 3px; }
+.takeaway { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 42px; border-top: 1px solid #aac6ff26; padding-top: 13px; text-align: center; }
+.takeaway svg { width: 27px; height: 27px; flex-shrink: 0; color: #73e6ff; }
+.takeaway p { margin: 0; color: #d1e0f7; font-size: clamp(20px, 1.6vw, 26px); line-height: 1.25; letter-spacing: -.015em; }
+.takeaway strong { color: #a0f3d7; font-weight: 750; }
+.mobile-takeaway { display: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; font-size: 18px; }
+.page.is-paused .node, .page.is-paused .wire { animation-play-state: paused; }
+
+@media (min-width: 761px) and (max-height: 740px) {
+  .page { padding-top: 18px; padding-bottom: 18px; gap: 14px; }
+  h1 { font-size: clamp(30px, 2.8vw, 40px); }
+  .subtitle { font-size: 22px; margin-top: 4px; }
+  .map { row-gap: 12px; }
+  .node { padding: 12px 17px; border-radius: 19px; }
+  .node-icon { width: 34px; height: 34px; border-radius: 10px; }
+  .node-icon svg { width: 24px; height: 24px; }
+  .node-title { font-size: clamp(21px, 1.8vw, 26px); }
+  .node-copy { font-size: 20px; line-height: 1.28; margin-top: 7px; }
+  .hub { gap: 13px; padding: 19px; }
+  .case-header h2 { font-size: 29px; }
+  .case-context { font-size: 20px; margin-top: 6px; }
+  .case-copy { font-size: 22px; line-height: 1.3; }
+  .case-topic h3 { font-size: 24px; }
+  .case-stage { gap: 11px; }
+  .takeaway { padding-top: 10px; min-height: 35px; }
+  .takeaway p { font-size: 21px; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .page { padding-left: 22px; padding-right: 22px; }
+  .map { column-gap: 24px; }
+  .node { padding-left: 14px; padding-right: 14px; }
+  .node-head { gap: 9px; }
+  .node-title { font-size: 22px; }
+  .node-icon { width: 32px; height: 32px; border-radius: 10px; }
+  .node-icon svg { width: 23px; height: 23px; }
+  .node-copy { font-size: 20px; }
+  .hub { padding-left: 17px; padding-right: 17px; }
+  .case-copy { font-size: 22px; }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .node-icon { display: none; }
+}
+@media (min-width: 761px) and (max-width: 1050px) and (max-height: 760px) {
+  .full-copy { display: none; }
+  .short-copy { display: block; }
+  .case-copy { font-size: 20px; line-height: 1.3; }
+  .case-topic h3 { font-size: 22px; }
+  .case-icon { width: 32px; height: 32px; border-radius: 10px; }
+  .case-icon svg { width: 24px; height: 24px; }
+}
+@media (max-height: 570px) and (min-width: 761px), (max-height: 570px) and (min-width: 621px) {
+  .page { padding: 10px 18px; gap: 8px; }
+  h1 { font-size: 28px; }
+  .subtitle { margin-top: 2px; font-size: 20px; }
+  .map { column-gap: 24px; row-gap: 7px; grid-template-rows: 23px repeat(3, minmax(0, 1fr)); }
+  .section-label { font-size: 18px; letter-spacing: .025em; }
+  .node { padding: 8px 11px; border-radius: 14px; }
+  .node-icon { display: none; }
+  .node-title { font-size: 20px; }
+  .node-copy { font-size: 18px; line-height: 1.2; margin-top: 5px; }
+  .full-copy, .short-copy { display: none; }
+  .compact-copy { display: block; }
+  .hub { padding: 14px; gap: 10px; border-radius: 22px; }
+  .hub::before { inset: -8px; border-radius: 30px; }
+  .case-header h2 { font-size: 25px; }
+  .case-context { font-size: 18px; margin-top: 5px; }
+  .case-topic h3 { font-size: 21px; }
+  .case-icon { display: none; }
+  .case-copy { font-size: 19px; line-height: 1.25; }
+  .case-stage { gap: 9px; }
+  .control-row { margin-top: 8px; min-height: 30px; }
+  .play-toggle { padding: 4px 6px; min-height: 30px; }
+  .step-count { font-size: 18px; }
+  .takeaway { min-height: 0; padding-top: 7px; gap: 9px; }
+  .takeaway p { font-size: 18px; }
+  .takeaway svg { width: 23px; height: 23px; }
+}
+@media (min-width: 621px) and (max-height: 450px) {
+  .case-header h2 { font-size: 23px; }
+  .context-full, .case-topic { display: none; }
+  .context-short { display: inline; }
+  .case-context, .case-copy { font-size: 18px; }
+  .hub { padding: 10px 12px; gap: 8px; }
+  .play-label { display: none; }
+  .play-toggle { min-width: 30px; }
+  .control-row { margin-top: 6px; min-height: 28px; }
+  .timeline { height: 4px; }
+  .node-title { font-size: 18px; }
+  .node { padding: 7px 10px; }
+  .takeaway svg { display: none; }
+}
+/* En pantallas estrechas, el ejemplo sigue EN MEDIO de las seis ramas. */
+@media (max-width: 760px) and (min-height: 571px), (max-width: 620px) {
+  .page { padding: 14px 15px; gap: 11px; }
+  h1 { font-size: clamp(26px, 4.8vw, 34px); }
+  .subtitle { font-size: 20px; margin-top: 4px; }
+  .map { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: 22px minmax(58px, .55fr) minmax(0, 2.6fr) minmax(58px, .55fr) 22px; column-gap: 10px; row-gap: 10px; }
+  .section-label { font-size: 18px; letter-spacing: .04em; }
+  .section-label::before { width: 7px; height: 7px; }
+  .section-label.cyber { grid-column: 1 / 4; grid-row: 1; }
+  .section-label.ethics { grid-column: 1 / 4; grid-row: 5; }
+  #privacy { grid-column: 1; grid-row: 2; }
+  #tools { grid-column: 2; grid-row: 2; }
+  #prevention { grid-column: 3; grid-row: 2; }
+  #fairness { grid-column: 1; grid-row: 4; }
+  #transparency { grid-column: 2; grid-row: 4; }
+  #human { grid-column: 3; grid-row: 4; }
+  .node { padding: 8px; border-radius: 16px; border-left-width: 3px; text-align: center; }
+  .node-head { display: block; }
+  .node-icon, .node-copy { display: none !important; }
+  .node-title { font-size: clamp(18px, 2.8vw, 22px); line-height: 1.15; letter-spacing: -.025em; }
+  .full-title { display: none; }
+  .short-title { display: inline; hyphens: manual; }
+  .node::after { width: 12px; height: 12px; top: 7px; right: 7px; }
+  .hub { grid-column: 1 / 4; grid-row: 3; align-self: stretch; height: 100%; padding: 16px 20px; gap: 12px; border-radius: 23px; }
+  .hub::before { display: none; }
+  .case-header h2 { font-size: 29px; }
+  .case-context { font-size: 20px; margin-top: 5px; }
+  .case-topic h3 { font-size: 24px; }
+  .case-copy { font-size: 22px; line-height: 1.3; }
+  .case-stage { gap: 11px; }
+  .case-icon { width: 34px; height: 34px; border-radius: 11px; }
+  .case-icon svg { width: 25px; height: 25px; }
+  .control-row { margin-top: 9px; min-height: 32px; }
+  .step-count { font-size: 20px; }
+  .play-toggle { padding: 4px 8px; min-height: 32px; }
+  .takeaway { min-height: 0; padding-top: 9px; gap: 10px; }
+  .takeaway svg { width: 24px; height: 24px; }
+  .takeaway p { font-size: 20px; line-height: 1.2; }
+  .desktop-takeaway { display: none; }
+  .mobile-takeaway { display: inline; }
+}
+@media (max-width: 420px) and (min-height: 571px) {
+  .page { padding: 12px; gap: 10px; }
+  .map { column-gap: 8px; row-gap: 8px; }
+  .node { padding: 7px; }
+  .hub { padding: 13px 16px; gap: 10px; }
+  .case-header h2 { font-size: 27px; }
+  .case-context { font-size: 19px; }
+  .case-topic h3 { font-size: 23px; }
+  .takeaway p { font-size: 19px; }
+}
+@media (max-width: 420px) and (max-height: 710px) {
+  .page { padding: 10px; gap: 8px; }
+  h1 { font-size: 25px; }
+  .subtitle { font-size: 19px; }
+  .map { column-gap: 7px; row-gap: 7px; grid-template-rows: 20px minmax(58px, .55fr) minmax(0, 2.6fr) minmax(58px, .55fr) 20px; }
+  .hub { padding: 10px 13px; gap: 8px; border-radius: 20px; }
+  .case-header h2 { font-size: 24px; }
+  .case-context { font-size: 18px; margin-top: 4px; }
+  .case-topic h3 { font-size: 21px; }
+  .case-copy { font-size: 20px; line-height: 1.2; }
+  .case-stage { gap: 8px; }
+  .case-icon { width: 28px; height: 28px; border-radius: 9px; }
+  .case-icon svg { width: 22px; height: 22px; }
+  .control-row { min-height: 28px; margin-top: 7px; }
+  .play-toggle { min-height: 28px; padding: 3px 6px; }
+  .step-count { font-size: 18px; }
+  .timeline { height: 4px; }
+  .takeaway p { font-size: 18px; }
+  .takeaway svg { display: none; }
+  .takeaway { padding-top: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+@media print {
+  @page { size: A4 landscape; margin: 9mm; }
+  html, body { width: 279mm; height: 192mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 279mm; height: 192mm; padding: 12px 16px; gap: 14px; }
+  .node { filter: none !important; opacity: 1 !important; box-shadow: none !important; animation: none; }
+  .hub { box-shadow: none; }
+  .play-toggle { visibility: hidden; }
+}
+  </style>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="i-lock" viewBox="0 0 32 32"><rect x="7" y="14" width="18" height="14" rx="4"/><path d="M11 14V9a5 5 0 0 1 10 0v5M16 20v3"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 32 32"><path d="M16 3 27 7v8c0 7-11 14-11 14S5 22 5 15V7L16 3Z"/><path d="m11 15 4 4 7-8"/></symbol>
+      <symbol id="i-scan" viewBox="0 0 32 32"><path d="M11 5H6a1 1 0 0 0-1 1v5m16-6h5a1 1 0 0 1 1 1v5M5 21v5a1 1 0 0 0 1 1h5m10 0h5a1 1 0 0 0 1-1v-5M3 16h26"/><path d="M12 11h8v10h-8z"/></symbol>
+      <symbol id="i-balance" viewBox="0 0 32 32"><path d="M16 5v23M9 28h14M5 10h22M8 10 3 21h10L8 10Zm16 0-5 11h10l-5-11Z"/><circle cx="16" cy="6" r="2"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 32 32"><path d="M2 16S7 7 16 7s14 9 14 9-5 9-14 9S2 16 2 16Z"/><circle cx="16" cy="16" r="4"/></symbol>
+      <symbol id="i-human" viewBox="0 0 32 32"><circle cx="13" cy="9" r="5"/><path d="M3 28v-4a10 10 0 0 1 16-8M19 24l4 4 7-10"/></symbol>
+      <symbol id="i-ai" viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" rx="6"/><path d="M15 3v7m10-7v7M15 30v7m10-7v7M3 15h7m-7 10h7m20-10h7m-7 10h7"/><path d="m16 20 3 3 6-7"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="8" rx="2"/><path d="M12 8V3H4m8 13v5H4m12-9h5M4 3v3m0 12v3"/><circle cx="21" cy="12" r="1"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8V4Z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2 7M4 5v6h6"/></symbol>
+    </defs>
+  </svg>
+
+  <main class="page" aria-label="Mapa mental: Ciberseguridad y Ética en la IA aplicada a RRHH">
+    <header class="header">
+      <div>
+        <h1><span class="title-cyber">Ciberseguridad</span> <span class="title-join">y</span> <span class="title-ethics">Ética</span></h1>
+        <p class="subtitle">en la IA aplicada a <strong>RRHH</strong></p>
+      </div>
+    </header>
+
+    <section class="map" id="mindmap" aria-label="Seis principios aplicados al mismo caso de selección de personal con IA">
+      <svg class="wires" id="wires" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+      <h2 class="section-label cyber">CIBERSEGURIDAD</h2>
+      <h2 class="section-label ethics">ÉTICA</h2>
+
+      <button type="button" class="node cyber is-active" id="privacy" aria-pressed="true" aria-controls="hub-copy" data-side="cyber" data-order="0">
+        <span class="node-head"><span class="node-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-lock"/></svg></span><span class="node-title"><span class="full-title">Datos protegidos</span><span class="short-title">Datos</span></span></span>
+        <span class="node-copy full-copy"><span class="line">Minimiza los datos.</span><span class="line">Cifra y limita accesos.</span></span>
+        <span class="node-copy short-copy">Minimiza, cifra y limita.</span>
+        <span class="node-copy compact-copy">Minimiza y cifra.</span>
+      </button>
+
+      <button type="button" class="node cyber" id="tools" aria-pressed="false" aria-controls="hub-copy" data-side="cyber" data-order="1">
+        <span class="node-head"><span class="node-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-shield"/></svg></span><span class="node-title"><span class="full-title">IA autorizada</span><span class="short-title">IA segura</span></span></span>
+        <span class="node-copy full-copy"><span class="line">Valida al proveedor.</span><span class="line">Usa solo IA aprobada.</span></span>
+        <span class="node-copy short-copy">Verifica proveedor y uso.</span>
+        <span class="node-copy compact-copy">Solo IA aprobada.</span>
+      </button>
+
+      <button type="button" class="node cyber" id="prevention" aria-pressed="false" aria-controls="hub-copy" data-side="cyber" data-order="2">
+        <span class="node-head"><span class="node-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-scan"/></svg></span><span class="node-title"><span class="full-title">Prevención activa</span><span class="short-title">Preven­ción</span></span></span>
+        <span class="node-copy full-copy"><span class="line">Prueba ataques y fugas.</span><span class="line">Registra y reporta incidentes.</span></span>
+        <span class="node-copy short-copy">Prueba y reporta fallos.</span>
+        <span class="node-copy compact-copy">Prueba y reporta.</span>
+      </button>
+
+      <section class="hub" id="hub" data-step="1" aria-label="Ejemplo animado: selección de personal con IA">
+        <header class="case-header">
+          <h2>Ejemplo</h2>
+          <p class="case-context"><span class="context-full">Selección de personal con IA</span><span class="context-short">Selección con IA</span></p>
+        </header>
+        <div class="case-stage" id="case-stage">
+          <div class="case-topic">
+            <span class="case-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use id="case-icon-use" href="#i-lock"/></svg></span>
+            <h3 id="case-title">Datos protegidos</h3>
+          </div>
+          <p class="case-copy" id="hub-copy">Los CV se cifran y solo el equipo de selección puede abrirlos. Se omiten datos que no hacen falta.</p>
+        </div>
+        <div class="case-controls">
+          <div class="timeline" aria-hidden="true"><div class="progress-fill" id="progress"></div></div>
+          <div class="control-row">
+            <span class="step-count" id="step-count" aria-label="Paso del ejemplo">1 / 6</span>
+            <button type="button" class="play-toggle" id="toggle-play" aria-label="Pausar animación" aria-pressed="false">
+              <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use id="play-icon-use" href="#i-pause"/></svg>
+              <span class="play-label" id="play-label">Pausar</span>
+            </button>
+          </div>
+        </div>
+        <p class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></p>
+      </section>
+
+      <button type="button" class="node ethics" id="fairness" aria-pressed="false" aria-controls="hub-copy" data-side="ethics" data-order="0">
+        <span class="node-head"><span class="node-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-balance"/></svg></span><span class="node-title"><span class="full-title">Equidad</span><span class="short-title">Equidad</span></span></span>
+        <span class="node-copy full-copy"><span class="line">Audita sesgos por grupo.</span><span class="line">Usa criterios del puesto.</span></span>
+        <span class="node-copy short-copy">Audita sesgos y criterios.</span>
+        <span class="node-copy compact-copy">Audita los sesgos.</span>
+      </button>
+
+      <button type="button" class="node ethics" id="transparency" aria-pressed="false" aria-controls="hub-copy" data-side="ethics" data-order="1">
+        <span class="node-head"><span class="node-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-eye"/></svg></span><span class="node-title"><span class="full-title">Transparencia</span><span class="short-title">Transpa­rencia</span></span></span>
+        <span class="node-copy full-copy"><span class="line">Informa cuándo se usa IA.</span><span class="line">Explica criterios y resultados.</span></span>
+        <span class="node-copy short-copy">Informa y explica el uso.</span>
+        <span class="node-copy compact-copy">Explica el uso.</span>
+      </button>
+
+      <button type="button" class="node ethics" id="human" aria-pressed="false" aria-controls="hub-copy" data-side="ethics" data-order="2">
+        <span class="node-head"><span class="node-icon"><svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-human"/></svg></span><span class="node-title"><span class="full-title">Control humano</span><span class="short-title">Control</span></span></span>
+        <span class="node-copy full-copy"><span class="line">Revisa antes de decidir.</span><span class="line">Permite revisión y reclamo.</span></span>
+        <span class="node-copy short-copy">Revisa y admite reclamos.</span>
+        <span class="node-copy compact-copy">Revisión y reclamo.</span>
+      </button>
+    </section>
+
+    <footer class="takeaway">
+      <svg fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-shield"/></svg>
+      <p><span class="desktop-takeaway">La IA recomienda; <strong>las personas deciden y responden.</strong></span><span class="mobile-takeaway">IA de apoyo. <strong>Responsabilidad humana.</strong></span></p>
+    </footer>
+  </main>
+
+  <script>
+(() => {
+  'use strict';
+  const page = document.querySelector('.page');
+  const map = document.getElementById('mindmap');
+  const hub = document.getElementById('hub');
+  const wires = document.getElementById('wires');
+  const stage = document.getElementById('case-stage');
+  const title = document.getElementById('case-title');
+  const copy = document.getElementById('hub-copy');
+  const icon = document.getElementById('case-icon-use');
+  const counter = document.getElementById('step-count');
+  const progress = document.getElementById('progress');
+  const toggle = document.getElementById('toggle-play');
+  const playLabel = document.getElementById('play-label');
+  const playIcon = document.getElementById('play-icon-use');
+  const announcer = document.getElementById('announcer');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const DURATION = 8000;
+  const steps = [
+    {
+      id: 'privacy', title: 'Datos protegidos', icon: 'i-lock',
+      full: 'Los CV se cifran y solo el equipo de selección puede abrirlos. Se omiten datos que no hacen falta.',
+      short: 'Los CV se cifran y solo RRHH puede verlos.',
+      tiny: 'CV cifrados y acceso solo de RRHH.'
+    },
+    {
+      id: 'tools', title: 'IA autorizada', icon: 'i-shield',
+      full: 'La empresa elige una IA aprobada. El contrato prohíbe reutilizar los CV para entrenar modelos.',
+      short: 'La IA está aprobada y no reutiliza los CV para entrenarse.',
+      tiny: 'IA aprobada; CV sin uso para entrenar.'
+    },
+    {
+      id: 'prevention', title: 'Prevención activa', icon: 'i-scan',
+      full: 'Antes de usarla, RRHH prueba CV con instrucciones maliciosas y reporta cualquier filtración.',
+      short: 'RRHH prueba CV con instrucciones falsas y reporta fallos.',
+      tiny: 'Prueba CV alterados y reporta fallos.'
+    },
+    {
+      id: 'fairness', title: 'Equidad', icon: 'i-balance',
+      full: 'RRHH compara la preselección por grupos para detectar sesgos. Solo cuentan criterios del puesto.',
+      short: 'RRHH comprueba que el filtro no discrimine entre grupos.',
+      tiny: 'RRHH audita sesgos en el filtro de CV.'
+    },
+    {
+      id: 'transparency', title: 'Transparencia', icon: 'i-eye',
+      full: 'Los postulantes saben que una IA revisa sus CV y reciben una explicación de los criterios.',
+      short: 'Se informa al postulante cómo la IA evalúa su CV.',
+      tiny: 'Cada postulante sabe cómo se evalúa su CV.'
+    },
+    {
+      id: 'human', title: 'Control humano', icon: 'i-human',
+      full: 'La IA sugiere candidatos, pero RRHH revisa la lista y decide. El postulante puede pedir otra evaluación.',
+      short: 'RRHH decide a quién entrevistar y permite pedir una revisión.',
+      tiny: 'RRHH revisa la lista y admite reclamos.'
+    }
+  ];
+  const nodes = steps.map(step => document.getElementById(step.id));
+  let current = 0;
+  let playing = true;
+  let elapsed = 0;
+  let lastTime = performance.now();
+  let drawFrame = 0;
+  let entryAnimation = null;
+
+  const isMobile = () => getComputedStyle(hub).gridColumnStart === '1';
+  function getExample(step) {
+    if (innerHeight <= 450 && !isMobile()) return step.tiny;
+    if (isMobile() || innerWidth <= 1100 || innerHeight <= 650) return step.short;
+    return step.full;
+  }
+  function updateContent() {
+    const step = steps[current];
+    title.textContent = step.title;
+    copy.textContent = getExample(step);
+    icon.setAttribute('href', '#' + step.icon);
+    counter.textContent = `${current + 1} / ${steps.length}`;
+  }
+  function setStep(index, manual = false, animate = true) {
+    current = (index + steps.length) % steps.length;
+    elapsed = 0;
+    progress.style.transform = 'scaleX(0)';
+    nodes.forEach((node, i) => {
+      const active = i === current;
+      node.classList.toggle('is-active', active);
+      node.setAttribute('aria-pressed', String(active));
+    });
+    const style = getComputedStyle(nodes[current]);
+    hub.style.setProperty('--active', style.getPropertyValue('--accent').trim());
+    hub.style.setProperty('--active-rgb', style.getPropertyValue('--rgb').trim());
+    hub.dataset.step = String(current + 1);
+    updateContent();
+    if (entryAnimation) entryAnimation.cancel();
+    if (animate && !reducedMotion.matches && stage.animate) {
+      entryAnimation = stage.animate(
+        [{ opacity: 0, transform: 'translateY(9px)' }, { opacity: 1, transform: 'translateY(0)' }],
+        { duration: 460, easing: 'cubic-bezier(.2,.7,.2,1)' }
+      );
+    }
+    if (manual) announcer.textContent = `${current + 1} de 6. ${steps[current].title}. ${copy.textContent}`;
+    scheduleDraw();
+  }
+  function setPlaying(value) {
+    playing = value;
+    page.classList.toggle('is-paused', !playing);
+    toggle.setAttribute('aria-pressed', String(!playing));
+    toggle.setAttribute('aria-label', playing ? 'Pausar animación' : 'Reanudar animación');
+    playLabel.textContent = playing ? 'Pausar' : 'Reanudar';
+    playIcon.setAttribute('href', playing ? '#i-pause' : '#i-play');
+    lastTime = performance.now();
+  }
+  function draw() {
+    const m = map.getBoundingClientRect();
+    const h = hub.getBoundingClientRect();
+    const mobile = isMobile();
+    const ns = 'http://www.w3.org/2000/svg';
+    wires.setAttribute('viewBox', `0 0 ${m.width} ${m.height}`);
+    wires.replaceChildren();
+    nodes.forEach((node, i) => {
+      const n = node.getBoundingClientRect();
+      const left = node.dataset.side === 'cyber';
+      const order = Number(node.dataset.order);
+      const color = getComputedStyle(node).getPropertyValue('--accent').trim();
+      let pathData, endX, endY;
+      if (mobile) {
+        const startX = h.left - m.left + h.width * ((order + .5) / 3);
+        const startY = (left ? h.top : h.bottom) - m.top;
+        endX = n.left - m.left + n.width / 2;
+        endY = (left ? n.bottom : n.top) - m.top;
+        const middleY = (startY + endY) / 2;
+        pathData = `M ${startX} ${startY} C ${startX} ${middleY}, ${endX} ${middleY}, ${endX} ${endY}`;
+      } else {
+        const startX = (left ? h.left : h.right) - m.left;
+        const startY = h.top - m.top + h.height / 2 + (order - 1) * Math.min(64, h.height * .17);
+        endX = (left ? n.right : n.left) - m.left;
+        endY = n.top - m.top + n.height / 2;
+        const dx = endX - startX;
+        pathData = `M ${startX} ${startY} C ${startX + dx * .53} ${startY}, ${endX - dx * .43} ${endY}, ${endX} ${endY}`;
+      }
+      const path = document.createElementNS(ns, 'path');
+      path.setAttribute('d', pathData);
+      path.setAttribute('stroke', color);
+      path.setAttribute('stroke-linecap', 'round');
+      path.style.color = color;
+      path.setAttribute('class', 'wire' + (i === current ? ' active' : ''));
+      wires.append(path);
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('cx', endX);
+      dot.setAttribute('cy', endY);
+      dot.setAttribute('r', i === current ? '5' : '3');
+      dot.setAttribute('fill', color);
+      dot.style.color = color;
+      dot.setAttribute('class', 'wire-dot' + (i === current ? ' active' : ''));
+      wires.append(dot);
+    });
+  }
+  function scheduleDraw() {
+    cancelAnimationFrame(drawFrame);
+    drawFrame = requestAnimationFrame(draw);
+  }
+  nodes.forEach((node, i) => node.addEventListener('click', () => setStep(i, true)));
+  toggle.addEventListener('click', () => setPlaying(!playing));
+  document.addEventListener('keydown', event => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowRight') { event.preventDefault(); setStep(current + 1, true); }
+    if (event.key === 'ArrowLeft') { event.preventDefault(); setStep(current - 1, true); }
+    if (event.key === 'Escape') setPlaying(false);
+  });
+  document.addEventListener('visibilitychange', () => { lastTime = performance.now(); });
+  window.addEventListener('resize', () => { updateContent(); scheduleDraw(); });
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(scheduleDraw);
+    observer.observe(map);
+    observer.observe(hub);
+  }
+  function tick(now) {
+    const delta = Math.max(0, now - lastTime);
+    lastTime = now;
+    if (playing && !document.hidden) {
+      elapsed += delta;
+      if (elapsed >= DURATION) setStep(current + 1);
+      progress.style.transform = `scaleX(${Math.min(elapsed / DURATION, 1)})`;
+    }
+    requestAnimationFrame(tick);
+  }
+  setStep(0, false, false);
+  setPlaying(playing);
+  requestAnimationFrame(tick);
+})();
+  </script>
+</body>
+</html>

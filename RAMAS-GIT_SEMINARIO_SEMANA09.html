@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ramas en Git · Trabajo en equipo</title>
+<style>
+  :root{
+    --bg:#0d1220; --card:#161d2f; --card2:#1d2640; --line:#2a3552;
+    --txt:#eef2fa; --mut:#a9b4cc; --git:#f05033;
+    --main:#4c8dff; --dev:#a970ff; --feat:#2fcf8a; --luis:#ff9f43; --rel:#ffc53d; --hot:#ff5c6c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at 20% 0%,#16203a 0%,var(--bg) 60%);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--txt)}
+  #stage{position:absolute;top:50%;left:50%;width:1600px;height:900px;transform-origin:center;
+    display:grid;grid-template-columns:1fr;grid-template-rows:auto 1fr auto auto;gap:12px;padding:14px 22px}
+  code{font-family:"Cascadia Code","Fira Code",Consolas,"Courier New",monospace}
+
+  /* ===== CABECERA ===== */
+  header{grid-column:1/-1;display:flex;align-items:center;gap:22px}
+  .logo{flex:0 0 auto;animation:spin 8s ease-in-out infinite}
+  @keyframes spin{0%,80%{transform:rotate(0)}90%{transform:rotate(-12deg)}100%{transform:rotate(0)}}
+  h1{font-size:40px;white-space:nowrap;font-weight:800;letter-spacing:-.8px;line-height:1.05}
+  h1 span{color:var(--git)}
+  .idea{margin-left:auto;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,#f0503326,#f0503308);
+    border:2px solid #f0503380;border-radius:18px;padding:10px 20px;font-size:24px;line-height:1.25;flex:1}
+  .idea .big{font-size:40px}
+  .idea b{color:#ffb4a5}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 18px;position:relative;overflow:hidden}
+  .card h2{font-size:28px;font-weight:800;display:flex;align-items:center;gap:10px}
+
+  /* ===== HISTORIA ANIMADA ===== */
+  .story{display:flex;flex-direction:column}
+  .story .top{display:flex;align-items:center;justify-content:space-between}
+  .btn{font:700 22px "Segoe UI",sans-serif;color:var(--txt);background:var(--card2);border:1px solid var(--line);
+    border-radius:12px;padding:6px 14px;cursor:pointer}
+  .btn:hover{border-color:var(--git)}
+  .story svg{flex:1;width:100%;min-height:0;display:block;margin:4px 0}
+  .caption{display:flex;align-items:center;gap:14px;background:var(--card2);border-radius:14px;padding:10px 18px;
+    font-size:30px;font-weight:700;min-height:62px}
+  .caption #capTxt{transition:opacity .25s}
+  .progress{position:absolute;left:0;bottom:0;height:5px;background:var(--git);width:0}
+  .pop{transform-box:fill-box;transform-origin:center}
+
+  /* ===== PASOS ===== */
+  .steps{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,1fr);gap:18px;padding-top:6px}
+  .step{position:relative;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:14px 8px 10px;
+    text-align:center;display:flex;flex-direction:column;align-items:center;gap:7px;
+    transition:transform .35s, border-color .35s, box-shadow .35s, background .35s}
+  .step:not(:last-child)::after{content:"➜";position:absolute;right:-17px;top:50%;transform:translateY(-50%);
+    font-size:22px;color:#55627f}
+  .step .num{position:absolute;top:-16px;left:-10px;width:34px;height:34px;border-radius:50%;background:#26314d;
+    border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:22px;color:var(--txt)}
+  .step h3{font-size:25px;line-height:1.15;white-space:nowrap}
+  .step .em{display:inline-block;font-size:28px;margin-right:3px}
+  .step code{display:inline-block;font-size:22px;background:#0b101c;border:1px solid #28334f;border-radius:9px;
+    padding:4px 8px;color:#cfe3ff;line-height:1.3;white-space:nowrap}
+  .flag{font-size:22px;line-height:1.2;color:var(--mut)}
+  .flag code{font-size:23px;font-weight:800;color:var(--rel);background:none;border:none;padding:0}
+  .flag b{color:var(--txt);font-size:23px}
+  .step p{font-size:22px;color:var(--mut);line-height:1.3}
+  .step.on{transform:translateY(-6px) scale(1.04);border-color:var(--git);background:#221d2c;
+    box-shadow:0 10px 30px #f0503340}
+  .step.on .num{background:var(--git);border-color:var(--git);color:#fff}
+  .step.on .em{animation:bounce .6s}
+  @keyframes bounce{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-8deg)}100%{transform:scale(1)}}
+
+  /* ===== REGLAS ===== */
+  .rules{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .rule{display:flex;align-items:center;gap:12px;border-radius:16px;padding:8px 16px;font-size:23px;font-weight:600;line-height:1.2;
+    background:var(--card);border:1px solid var(--line)}
+  .rule .i{font-size:32px}
+  .rule b{color:var(--c)}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- CABECERA -->
+  <header>
+    <svg class="logo" width="66" height="66" viewBox="0 0 92 92" aria-hidden="true">
+      <rect x="8" y="8" width="76" height="76" rx="12" transform="rotate(45 46 46)" fill="#f05033"/>
+      <circle cx="34" cy="30" r="6" fill="#fff"/><circle cx="34" cy="62" r="6" fill="#fff"/><circle cx="58" cy="44" r="6" fill="#fff"/>
+      <path d="M34 30 V62 M34 30 Q34 44 58 44" stroke="#fff" stroke-width="5" fill="none"/>
+    </svg>
+    <h1>Ramas en <span>Git</span>:<br>trabajar en equipo sin pisarnos</h1>
+    <div class="idea"><span class="big">🌿</span><div>Una <b>rama</b> es una <b>copia paralela</b> del proyecto: cada uno trabaja en la suya sin romper lo de los demás.</div></div>
+  </header>
+
+  <!-- HISTORIA ANIMADA -->
+  <section class="card story" id="storyCard">
+    <div class="top">
+      <h2>🎬 Así trabaja un equipo con ramas</h2>
+      <button class="btn" id="pauseBtn">⏸ Pausar</button>
+    </div>
+    <svg viewBox="0 0 1700 342" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g id="story" font-family="Segoe UI,Arial,sans-serif">
+        <!-- MAIN -->
+        <path d="M50 165 H1680" stroke="#4c8dff" stroke-width="10" fill="none" stroke-linecap="round" pathLength="1" data-draw="0,1"/>
+        <g class="pop" data-pop="0.05"><rect x="2" y="142" width="104" height="46" rx="23" fill="#4c8dff"/><text x="54" y="175" text-anchor="middle" font-size="29" font-weight="800" fill="#fff" font-family="Consolas,monospace">main</text></g>
+        <circle class="pop" data-pop="0.6" cx="200" cy="165" r="15" fill="#4c8dff" stroke="#0d1220" stroke-width="4"/>
+
+        <!-- ANA -->
+        <path d="M200 165 C245 165 245 60 290 60 H860" stroke="#2fcf8a" stroke-width="10" fill="none" stroke-linecap="round" pathLength="1" data-draw="1.5,4.5"/>
+        <g class="pop" data-pop="1.7">
+          <circle cx="270" cy="24" r="21" fill="#2fcf8a33" stroke="#2fcf8a" stroke-width="2"/>
+          <text x="270" y="33" text-anchor="middle" font-size="25">👩‍💻</text>
+          <text x="302" y="35" font-size="30" font-weight="800" fill="#2fcf8a">Ana</text>
+          <text x="370" y="35" font-size="29" fill="#c3cde2" font-family="Consolas,monospace">feature/login</text>
+        </g>
+        <circle class="pop" data-pop="2.64" cx="420" cy="60" r="13" fill="#2fcf8a" stroke="#0d1220" stroke-width="4"/>
+        <circle class="pop" data-pop="3.32" cx="580" cy="60" r="13" fill="#2fcf8a" stroke="#0d1220" stroke-width="4"/>
+        <circle class="pop" data-pop="3.99" cx="740" cy="60" r="13" fill="#2fcf8a" stroke="#0d1220" stroke-width="4"/>
+        <g class="pop" data-pop="4.6">
+          <rect x="908" y="34" width="224" height="52" rx="26" fill="#2fcf8a"/>
+          <text x="1020" y="70" text-anchor="middle" font-size="28" font-weight="800" fill="#0d1220">PR ✔ aprobado</text>
+        </g>
+        <path d="M860 60 C910 60 910 165 960 165" stroke="#2fcf8a" stroke-width="10" fill="none" stroke-linecap="round" pathLength="1" data-draw="5,5.6"/>
+        <circle class="pop" data-pop="5.6" cx="960" cy="165" r="17" fill="#4c8dff" stroke="#2fcf8a" stroke-width="5" filter="url(#glow)"/>
+
+        <!-- LUIS -->
+        <path d="M200 165 C245 165 245 270 290 270 H1320" stroke="#ff9f43" stroke-width="10" fill="none" stroke-linecap="round" pathLength="1" data-draw="2,8"/>
+        <g class="pop" data-pop="2.3">
+          <circle cx="270" cy="314" r="21" fill="#ff9f4333" stroke="#ff9f43" stroke-width="2"/>
+          <text x="270" y="323" text-anchor="middle" font-size="25">👨‍💻</text>
+          <text x="302" y="325" font-size="30" font-weight="800" fill="#ff9f43">Luis</text>
+          <text x="378" y="325" font-size="29" fill="#c3cde2" font-family="Consolas,monospace">feature/pago</text>
+        </g>
+        <circle class="pop" data-pop="3.69" cx="480" cy="270" r="13" fill="#ff9f43" stroke="#0d1220" stroke-width="4"/>
+        <circle class="pop" data-pop="4.82" cx="700" cy="270" r="13" fill="#ff9f43" stroke="#0d1220" stroke-width="4"/>
+        <!-- sincronizar -->
+        <path d="M960 165 C1010 165 1010 270 1060 270" stroke="#7fb0ff" stroke-width="7" fill="none" stroke-linecap="round" pathLength="1" data-draw="6,6.8"/>
+        <g class="pop" data-pop="6.1">
+          <rect x="1078" y="186" width="208" height="50" rx="25" fill="#1d2640" stroke="#7fb0ff" stroke-width="2"/>
+          <text x="1182" y="221" text-anchor="middle" font-size="28" font-weight="700" fill="#7fb0ff">🔄 sincroniza</text>
+        </g>
+        <circle class="pop" data-pop="6.85" cx="1060" cy="270" r="15" fill="#ff9f43" stroke="#7fb0ff" stroke-width="4"/>
+        <circle class="pop" data-pop="7.4" cx="1200" cy="270" r="13" fill="#ff9f43" stroke="#0d1220" stroke-width="4"/>
+        <g class="pop" data-pop="7.9">
+          <rect x="1440" y="244" width="224" height="52" rx="26" fill="#ff9f43"/>
+          <text x="1552" y="280" text-anchor="middle" font-size="28" font-weight="800" fill="#0d1220">PR ✔ aprobado</text>
+        </g>
+        <path d="M1320 270 C1370 270 1370 165 1420 165" stroke="#ff9f43" stroke-width="10" fill="none" stroke-linecap="round" pathLength="1" data-draw="8,8.6"/>
+        <circle class="pop" data-pop="8.6" cx="1420" cy="165" r="17" fill="#4c8dff" stroke="#ff9f43" stroke-width="5" filter="url(#glow)"/>
+
+        <!-- VERSIÓN -->
+        <g class="pop" data-pop="9.1">
+          <rect x="1322" y="80" width="196" height="56" rx="14" fill="#4c8dff"/>
+          <text x="1420" y="119" text-anchor="middle" font-size="31" font-weight="800" fill="#fff">v1.1 🚀</text>
+          <path d="M1410 136 L1420 148 L1430 136 Z" fill="#4c8dff"/>
+        </g>
+      </g>
+    </svg>
+    <div class="caption"><span id="capTxt">🚀 main = el código estable que todos comparten</span></div>
+    <div class="progress" id="prog"></div>
+  </section>
+
+  <!-- PASOS -->
+  <section class="steps" id="steps">
+    <div class="step"><span class="num">1</span><h3><span class="em">🌱</span>Crear rama</h3><code>git switch -c<br>feature/login</code><div class="flag"><code>-c</code> = <b>create</b><br>(crear)</div></div>
+    <div class="step"><span class="num">2</span><h3><span class="em">💾</span>Guardar</h3><code>git commit -m<br>"feat: login"</code><div class="flag"><code>-m</code> = <b>message</b><br>(mensaje)</div></div>
+    <div class="step"><span class="num">3</span><h3><span class="em">☁️</span>Subir</h3><code>git push -u<br>origin<br>feature/login</code><div class="flag"><code>-u</code> = <b>upstream</b><br>(enlazar)</div></div>
+    <div class="step"><span class="num">4</span><h3><span class="em">🔍</span>Pull Request</h3><p>El equipo revisa + tests automáticos</p></div>
+    <div class="step"><span class="num">5</span><h3><span class="em">🔀</span>Merge</h3><p>Tu rama se une a la principal</p></div>
+    <div class="step"><span class="num">6</span><h3><span class="em">🧹</span>Limpiar</h3><code>git branch -d<br>feature/login</code><div class="flag"><code>-d</code> = <b>delete</b><br>(borrar)</div></div>
+  </section>
+
+  <!-- REGLAS -->
+  <section class="rules">
+    <div class="rule" style="--c:var(--main)"><span class="i">🔒</span><span><b>main protegida:</b> nadie sube directo</span></div>
+    <div class="rule" style="--c:var(--feat)"><span class="i">⏱️</span><span><b>Ramas cortas:</b> de 1 a 3 días</span></div>
+    <div class="rule" style="--c:#7fb0ff"><span class="i">🔄</span><span><b>Sincroniza</b> tu rama cada día</span></div>
+    <div class="rule" style="--c:var(--rel)"><span class="i">⚡</span><span><b>¿Conflicto?</b> Elige qué código queda</span></div>
+  </section>
+</div>
+
+<script>
+  // ---- Escalado: todo cabe en una sola vista ----
+  const stage = document.getElementById('stage');
+  function fit(){
+    const s = Math.min(innerWidth/1600, innerHeight/900);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  // ---- Línea de tiempo de la historia (12 s en bucle) ----
+  const T = 12;
+  const draws = [...document.querySelectorAll('[data-draw]')].map(el=>{
+    const [s,e] = el.dataset.draw.split(',').map(Number);
+    el.style.strokeDasharray = 1; return {el,s,e};
+  });
+  const pops = [...document.querySelectorAll('[data-pop]')].map(el=>({el,s:+el.dataset.pop}));
+  const captions = [
+    [0,   "🚀 main = el código estable que todos comparten"],
+    [1.5, "👩‍💻 Ana crea su propia rama para hacer el login"],
+    [3,   "👨‍💻 Luis trabaja en paralelo, sin pisar el trabajo de Ana"],
+    [4.6, "🔍 Ana abre un Pull Request → el equipo revisa → merge"],
+    [6,   "🔄 Luis trae a su rama lo nuevo de main (se sincroniza)"],
+    [7.8, "✅ Luis también abre su Pull Request y hace merge"],
+    [9,   "🎉 main tiene las dos funciones: ¡nueva versión v1.1!"]
+  ];
+  const cap = document.getElementById('capTxt'), prog = document.getElementById('prog'), story = document.getElementById('story');
+  const clamp = v => Math.max(0, Math.min(1, v));
+  const backOut = x => { const c=1.9; return 1 + (c+1)*Math.pow(x-1,3) + c*Math.pow(x-1,2); };
+  let t = 0, last = performance.now(), paused = false, capIdx = -1;
+
+  function render(){
+    draws.forEach(d => d.el.style.strokeDashoffset = 1 - clamp((t-d.s)/(d.e-d.s)));
+    pops.forEach(p => {
+      const k = clamp((t-p.s)/0.4);
+      p.el.style.opacity = k;
+      p.el.style.transform = `scale(${k ? backOut(k) : 0.01})`;
+    });
+    story.style.opacity = t > 11.3 ? 1 - (t-11.3)/0.7 : 1;
+    prog.style.width = (t/T*100) + '%';
+    let i = 0; captions.forEach((c,j)=>{ if (t >= c[0]) i = j; });
+    if (i !== capIdx){
+      capIdx = i; cap.style.opacity = 0;
+      setTimeout(()=>{ cap.textContent = captions[i][1]; cap.style.opacity = 1; }, 180);
+    }
+  }
+  function loop(now){
+    if (!paused) t = (t + (now-last)/1000) % T;
+    last = now; render(); requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+  const btn = document.getElementById('pauseBtn');
+  btn.onclick = () => { paused = !paused; btn.textContent = paused ? '▶ Reproducir' : '⏸ Pausar'; };
+
+  // ---- Pasos: se iluminan uno a uno ----
+  const steps = [...document.querySelectorAll('.step')]; let si = 0;
+  function nextStep(){ steps.forEach((s,i)=>s.classList.toggle('on', i===si)); si = (si+1) % steps.length; }
+  nextStep(); setInterval(nextStep, 1700);
+</script>
+</body>
+</html>
