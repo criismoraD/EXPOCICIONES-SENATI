@@ -6,11 +6,13 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 ---
 
-## 🚀 Exposición Destacada (Semana 10)
+## 🚀 Exposiciones Destacadas (Semana 10)
 
 | Curso | Tema | Enlace Directo |
 | :--- | :--- | :--- |
 | **Empleabilidad** | Inteligencia Emocional en Equipos Scrum | [Ver Exposición](./INGELIGENCIA_EMOCIONAL_EMPLEABILIDAD_SEMANA_10.html) |
+| **Inglés** | Mapa Mental · OOP en PHP & XML en SQL Server | [Ver Exposición](./INGLES_SEMANA_10.html) |
+| **Empleabilidad** | Normalización y Calidad • Distribución de Frecuencias | [Ver Exposición](./CALIDAD_TOTAL_10.html) |
 
 ---
 
