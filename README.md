@@ -6,12 +6,11 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 ---
 
-## 🚀 Exposición Destacada (Semana 09)
+## 🚀 Exposición Destacada (Semana 10)
 
 | Curso | Tema | Enlace Directo |
 | :--- | :--- | :--- |
-| **Empleabilidad** | Ciberseguridad y Ética · Ejemplo animado en RRHH | [Ver Exposición](./ciberseguridad_etica_ia_rrhh_EMPLEABILIDAD_SEMANA09.html) |
-| **Seminario** | Ramas en Git · Trabajo en equipo | [Ver Exposición](./RAMAS-GIT_SEMINARIO_SEMANA09.html) |
+| **Empleabilidad** | Inteligencia Emocional en Equipos Scrum | [Ver Exposición](./INGELIGENCIA_EMOCIONAL_EMPLEABILIDAD_SEMANA_10.html) |
 
 ---
 
@@ -29,6 +28,8 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 Ubicadas en la carpeta [`ANTERIORES/`](./ANTERIORES/):
 
+- **Semana 09 - Empleabilidad:** [Ciberseguridad y Ética · Ejemplo animado en RRHH](./ANTERIORES/ciberseguridad_etica_ia_rrhh_EMPLEABILIDAD_SEMANA09.html)
+- **Semana 09 - Seminario:** [Ramas en Git · Trabajo en equipo](./ANTERIORES/RAMAS-GIT_SEMINARIO_SEMANA09.html)
 - **Semana 08 - Seminario:** [IoT en la Agricultura de Precisión](./ANTERIORES/SEMANA08_IOT_AGRICULTURA_PRECISION_SEMINARIO.html)
 - **Semana 08 - Empleabilidad:** [Método STAR · Guía visual para entrevistas](./ANTERIORES/SEMANA08_mapa-star_IOT.html)
 - **Semana 05 - Seminario:** [Inmótica · Edificios que piensan](./ANTERIORES/SEMANA_05_INMOTICA_SEMINARIO.html)
