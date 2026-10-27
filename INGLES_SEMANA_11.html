@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mapa mental interactivo · Temas 3 y 4 · Bases de datos y Sistemas de información</title>
+<title>Mind map · Topics 3 &amp; 4 · Databases and Information Systems</title>
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiNmM2ViZGEiLz48ZWxsaXBzZSBjeD0iMzIiIGN5PSIxOCIgcng9IjE4IiByeT0iNyIgZmlsbD0iIzJmNWY4ZiIvPjxwYXRoIGQ9Ik0xNCAxOHYyNmMwIDQgOCA3IDE4IDdzMTgtMyAxOC03VjE4IiBmaWxsPSIjNmQ5YmM0IiBzdHJva2U9IiMyZjVmOGYiIHN0cm9rZS13aWR0aD0iMyIvPjxjaXJjbGUgY3g9IjMyIiBjeT0iMzQiIHI9IjUiIGZpbGw9IiNjNTYwM2MiLz48L3N2Zz4K" type="image/svg+xml">
 <script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/p5.brush@2.2.3/dist/p5.brush.js"></script>
@@ -17,7 +17,7 @@
   .dark u { text-decoration-color:#ffd36b; }
 
   /* ---------- map nodes ---------- */
-  .node { position:absolute; border:0; background:transparent; cursor:pointer; color:var(--ink); font-family:inherit;
+  .node { position:absolute; z-index:2; border:0; background:transparent; cursor:pointer; color:var(--ink); font-family:inherit;
           border-radius:18px; padding:0; transition:transform .18s, box-shadow .18s, background .18s; text-align:left; }
   .node:hover, .node:focus-visible { transform:scale(1.045); outline:none; background:rgba(255,255,255,.22);
           box-shadow:0 0 0 5px #e3a72f, 0 12px 26px rgba(0,0,0,.28); z-index:3; }
@@ -39,19 +39,22 @@
   #panel.open { display:block; }
   #card { position:absolute; left:44px; right:44px; top:22px; bottom:22px; background:#f9f3e4; border-radius:24px; border:5px solid var(--c);
           box-shadow:0 20px 60px rgba(0,0,0,.55); display:flex; flex-direction:column; overflow:hidden; }
-  #head { display:flex; align-items:center; gap:24px; padding:14px 28px; background:var(--c); color:#fff6e4; flex:none; }
-  #head img { height:104px; border-radius:14px; background:#f3ebda; border:3px solid rgba(255,255,255,.7); }
-  #head .ttl { font:700 42px/1.1 Georgia,serif; }
+  #head { display:flex; align-items:center; gap:22px; padding:14px 28px; background:var(--c); color:#fff6e4; flex:none; }
+  #head img { height:104px; border-radius:14px; background:#f3ebda; border:3px solid rgba(255,255,255,.7); flex:none; }
+  #head .headtx { min-width:0; flex:1; }
+  #head .eyebrow { font:700 15px/1 "Trebuchet MS",sans-serif; letter-spacing:.22em; color:#ffd36b; margin-bottom:6px; }
+  #head .ttl { font:700 38px/1.12 Georgia,serif; }
   #head .sub { font-size:24px; margin-top:4px; opacity:.95; }
   #head .ttl u, #head .sub u { text-decoration-color:#ffd36b; }
-  #close { margin-left:auto; font-size:26px; font-weight:700; font-family:inherit; border:3px solid #fff6e4; background:transparent; color:#fff6e4; border-radius:14px; padding:10px 20px; cursor:pointer; }
+  #close { margin-left:6px; font-size:26px; font-weight:700; font-family:inherit; border:3px solid #fff6e4; background:transparent; color:#fff6e4; border-radius:14px; padding:10px 20px; cursor:pointer; flex:none; }
   #close:hover { background:#fff6e4; color:var(--c); }
-  #body { overflow:auto; padding:10px 34px 40px; font-size:25px; line-height:1.42; flex:1; }
-  #body h3 { font:700 34px Georgia,serif; color:var(--c); margin:30px 0 10px; }
+  #body { overflow:auto; padding:8px 32px 26px; font-size:23px; line-height:1.4; flex:1; }
+  #body h3 { font:700 30px Georgia,serif; color:var(--c); margin:16px 0 6px; }
   #body p { margin:8px 0; }
-  .pts { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin:12px 0; }
-  .pt { background:#fff; border:3px solid var(--c); border-radius:16px; padding:12px 16px; font-size:24px; line-height:1.3; }
-  .pt b { display:block; font:700 27px Georgia,serif; color:var(--c); }
+  .pts { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; margin:10px 0; }
+  .pts.five { grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); }
+  .pt { background:#fff; border:3px solid var(--c); border-radius:16px; padding:9px 14px; font-size:22px; line-height:1.3; }
+  .pt b { display:block; font:700 25px Georgia,serif; color:var(--c); }
   .btn { font-family:inherit; font-size:24px; padding:10px 18px; border-radius:14px; border:3px solid var(--c); background:#fff; color:var(--ink); cursor:pointer; margin:4px 6px 4px 0; transition:transform .12s, background .15s; }
   .btn:hover { transform:translateY(-2px); background:#fdf1cf; }
   .btn.on { background:var(--c); color:#fff6e4; }
@@ -60,7 +63,7 @@
   .code { font-family:Consolas,"Courier New",monospace; font-size:23px; background:#2b2a33; color:#f5e9c8; border-radius:12px; padding:12px 16px; margin:10px 0; white-space:pre-wrap; line-height:1.4; }
   .code .k { color:#ffb86b; font-weight:700; }
   .code .s { color:#9fe0a2; }
-  table.db { border-collapse:collapse; font-size:22px; margin:6px 0 10px; background:#fff; }
+  table.db { border-collapse:collapse; font-size:22px; margin:6px 0 10px; background:#fff; width:100%; }
   table.db th { background:var(--c); color:#fff6e4; padding:6px 12px; text-align:left; }
   table.db td { border:2px solid #d9cdb4; padding:5px 12px; }
   table.db td.null { color:#aaa; font-style:italic; background:#f1ece0; }
@@ -69,12 +72,34 @@
   .ok { color:#2b7a3d; } .bad { color:#b3261e; }
   .chips { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:10px 0; }
   .chipn { border:4px solid #bbb; border-radius:18px; padding:8px 18px; font-size:26px; font-weight:700; background:#fff; transition:all .25s; }
-  .compare { width:100%; border-collapse:collapse; font-size:24px; background:#fff; }
-  .compare th { background:var(--c); color:#fff6e4; padding:10px 14px; text-align:left; }
-  .compare td { border:2px solid #d9cdb4; padding:9px 14px; }
+  .compare { width:100%; border-collapse:collapse; font-size:21.5px; background:#fff; }
+  .compare th { background:var(--c); color:#fff6e4; padding:7px 12px; text-align:left; }
+  .compare td { border:2px solid #d9cdb4; padding:6px 12px; }
   .compare td:first-child { font-weight:700; background:#f4ecd8; }
   .chipimg { display:flex; align-items:center; gap:10px; cursor:pointer; }
   .chipimg img { height:62px; border-radius:10px; background:#f3ebda; }
+
+  /* ---------- panel figures, notes, language switch ---------- */
+  .fig { max-width:790px; margin:10px auto 3px; background:#fffdf5; border:3px solid var(--c); border-radius:20px; padding:8px 14px 6px;
+         box-shadow:0 4px 0 rgba(42,38,34,.07); }
+  .fig svg { display:block; width:100%; height:auto; max-height:var(--fh,196px); }
+  .fig .cap { font-size:19px; font-style:italic; color:#6b6358; text-align:center; margin-top:2px; }
+  .note { display:flex; gap:14px; background:#fdf1cf; border-left:10px solid var(--c); border-radius:4px 18px 18px 4px;
+          padding:10px 17px; margin:12px 0 2px; font-size:21.5px; line-height:1.32; }
+  .note .lbl { display:block; font:700 14px/1 "Trebuchet MS",sans-serif; letter-spacing:.18em; color:var(--c); margin-bottom:5px; }
+  .egs { display:flex; flex-wrap:wrap; gap:10px; margin:10px 0; }
+  .egs span { background:#fff; border:2px dashed var(--c); border-radius:30px; padding:4px 16px; font-size:21px; font-weight:700; }
+
+  .langsw { display:flex; gap:3px; background:#f9f3e4; border:3px solid #2a2622; border-radius:30px; padding:3px; }
+  .langsw button { font:700 17px/1 "Trebuchet MS",sans-serif; letter-spacing:.05em; padding:7px 13px; border:0; border-radius:22px;
+                   background:transparent; color:#2a2622; cursor:pointer; }
+  .langsw button.on { background:#2a2622; color:#fff6e4; }
+  #lang { position:absolute; right:16px; bottom:2px; z-index:8; padding:2px; border-width:2px; }
+  #panel.open ~ #lang { display:none; }
+  #lang button { font-size:14px; padding:4px 10px; }
+  .hdr-sw { margin-left:auto; background:rgba(255,246,228,.14); border-color:rgba(255,246,228,.85); }
+  .hdr-sw button { color:#fff6e4; }
+  .hdr-sw button.on { background:#fff6e4; color:var(--c); }
 </style>
   <script data-arena-recording="true">(function(){
 "use strict";
@@ -102,7 +127,19 @@ loadRrweb();
 </head>
 <body>
 <div id="stage">
+  <svg id="inkdefs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;left:0;top:0;pointer-events:none">
+    <defs>
+      <filter id="rough" filterUnits="userSpaceOnUse" x="-40" y="-40" width="760" height="300">
+        <feTurbulence type="fractalNoise" baseFrequency="0.014 0.021" numOctaves="2" seed="11" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10Z" fill="#2a2622"/>
+      </marker>
+    </defs>
+  </svg>
   <div id="panel"><div id="card"><div id="head"></div><div id="body"></div></div></div>
+  <div id="lang" class="langsw" role="group" aria-label="Language"><button data-lang="en">EN</button><button data-lang="es">ES</button></div>
 </div>
 
 <script>
@@ -122,35 +159,69 @@ const C = { paper:'#f3ebda', ink:'#2a2622', blue:'#2f5f8f', blueM:'#6d9bc4', blu
 
 /* ---------- geometry of the map (shared by paint + DOM) ---------- */
 const NODES = [
-  { id:'root', kind:'root', x:720, y:449, w:460, h:150, tt:'Temas 3 y 4', st:'Datos y sistemas de información' },
-  { id:'t3', kind:'hub', br:'A', x:720, y:261, w:1000, h:106, lab:'TEMA 3', tt:'Bases de datos: <u>Relational</u> vs <u>Non-Relational</u>' },
-  { id:'t4', kind:'hub', br:'B', x:720, y:637, w:1000, h:106, lab:'TEMA 4', tt:'Componentes de los <u>Information Systems</u>' },
-  { id:'rel',   kind:'leaf', br:'A', x:250,  y:89, w:440, h:118, t1:'Modelo relacional', t2:'<u>Relational</u> · <u>SQL</u>' },
-  { id:'nosql', kind:'leaf', br:'A', x:720,  y:89, w:440, h:118, t1:'Modelo no relacional', t2:'<u>Non-Relational</u> · <u>NoSQL</u>' },
-  { id:'cmp',   kind:'leaf', br:'A', x:1190, y:89, w:440, h:118, t1:'Comparación', t2:'¿Cuál elegir y cuándo?' },
-  { id:'hw',    kind:'leaf', br:'B', x:152,  y:809, w:266, h:118, t1:'<u>Hardware</u>', t2:'Equipo físico' },
-  { id:'sw',    kind:'leaf', br:'B', x:436,  y:809, w:266, h:118, t1:'<u>Software</u>', t2:'Programas' },
-  { id:'data',  kind:'leaf', br:'B', x:720,  y:809, w:266, h:118, t1:'Datos', t2:'(<u>Data</u>)' },
-  { id:'people',kind:'leaf', br:'B', x:1004, y:809, w:266, h:118, t1:'Personas', t2:'(<u>People</u>)' },
-  { id:'proc',  kind:'leaf', br:'B', x:1288, y:809, w:266, h:118, t1:'Procesos', t2:'(<u>Processes</u>)' },
+  { id:'root',  kind:'root', x:720,  y:449, w:460,  h:150 },
+  { id:'t3',    kind:'hub',  br:'A', x:720,  y:261, w:1000, h:106 },
+  { id:'t4',    kind:'hub',  br:'B', x:720,  y:637, w:1000, h:106 },
+  { id:'rel',   kind:'leaf', br:'A', x:250,  y:89,  w:440, h:118 },
+  { id:'nosql', kind:'leaf', br:'A', x:720,  y:89,  w:440, h:118 },
+  { id:'cmp',   kind:'leaf', br:'A', x:1190, y:89,  w:440, h:118 },
+  { id:'hw',    kind:'leaf', br:'B', x:152,  y:809, w:266, h:118 },
+  { id:'sw',    kind:'leaf', br:'B', x:436,  y:809, w:266, h:118 },
+  { id:'data',  kind:'leaf', br:'B', x:720,  y:809, w:266, h:118 },
+  { id:'people',kind:'leaf', br:'B', x:1004, y:809, w:266, h:118 },
+  { id:'proc',  kind:'leaf', br:'B', x:1288, y:809, w:266, h:118 },
 ];
 const NB = Object.fromEntries(NODES.map(n => [n.id, n]));
 const icSize = n => n.br === 'A' ? 84 : 66;
 const icCenter = n => [n.x - n.w/2 + 16 + icSize(n)/2, n.y];
 const CROPS = {};   // id -> dataURL of painted image (cropped from the canvas)
 
+const MAPL = {
+  en: {
+    root:  { tt:'Topics 3 & 4',  st:'Data and <u>Information Systems</u>' },
+    t3:    { lab:'TOPIC 3', tt:'Databases: <u>Relational</u> vs <u>Non-Relational</u>' },
+    t4:    { lab:'TOPIC 4', tt:'Components of an <u>Information System</u>' },
+    rel:   { t1:'Relational model',     t2:'<u>SQL</u> · fixed <u>Schema</u>' },
+    nosql: { t1:'Non-relational model', t2:'<u>NoSQL</u> · flexible' },
+    cmp:   { t1:'Comparison',           t2:'Which one, and when?' },
+    hw:    { t1:'<u>Hardware</u>',  t2:'Physical parts' },
+    sw:    { t1:'<u>Software</u>',  t2:'Programs' },
+    data:  { t1:'<u>Data</u>',      t2:'Raw facts' },
+    people:{ t1:'<u>People</u>',    t2:'Users & roles' },
+    proc:  { t1:'<u>Processes</u>', t2:'Steps & rules' },
+  },
+  es: {
+    root:  { tt:'Temas 3 y 4',  st:'Datos y sistemas de información' },
+    t3:    { lab:'TEMA 3', tt:'Bases de datos: <u>Relational</u> vs <u>Non-Relational</u>' },
+    t4:    { lab:'TEMA 4', tt:'Componentes de los <u>Information Systems</u>' },
+    rel:   { t1:'Modelo relacional',     t2:'<u>Relational</u> · <u>SQL</u>' },
+    nosql: { t1:'Modelo no relacional',  t2:'<u>Non-Relational</u> · <u>NoSQL</u>' },
+    cmp:   { t1:'Comparación',           t2:'¿Cuál elegir y cuándo?' },
+    hw:    { t1:'<u>Hardware</u>',  t2:'Equipo físico' },
+    sw:    { t1:'<u>Software</u>',  t2:'Programas' },
+    data:  { t1:'Datos',            t2:'(<u>Data</u>)' },
+    people:{ t1:'Personas',         t2:'(<u>People</u>)' },
+    proc:  { t1:'Procesos',         t2:'(<u>Processes</u>)' },
+  }
+};
+
 /* ---------- build DOM for the map ---------- */
 const stage = document.getElementById('stage');
-(function buildMap() {
+const bare = s => s.replace(/<[^>]+>/g, '');
+
+function buildMap() {
+  stage.querySelectorAll('.node').forEach(e => e.remove());
+  const L = MAPL[LANG_CUR];
   let html = '';
   for (const n of NODES) {
+    const l = L[n.id];
     const st = `left:${n.x-n.w/2}px;top:${n.y-n.h/2}px;width:${n.w}px;height:${n.h}px;`;
-    if (n.kind === 'root') html += `<button class="node root dark" data-open="root-info" style="${st}" aria-label="Temas 3 y 4"><span class="tt">${n.tt}</span><span class="st">${n.st}</span></button>`;
-    else if (n.kind === 'hub') html += `<button class="node hub dark" data-open="${n.id}" style="${st}"><span class="lab">${n.lab}</span><span class="tt">${n.tt}</span></button>`;
-    else html += `<button class="node leaf ${n.br}" data-open="${n.id}" style="${st}padding-left:${icSize(n)+30}px;"><span class="t1">${n.t1}</span><span class="t2">${n.t2}</span></button>`;
+    if (n.kind === 'root') html += `<button class="node root dark" data-open="root-info" style="${st}" aria-label="${bare(l.tt)}"><span class="tt">${l.tt}</span><span class="st">${l.st}</span></button>`;
+    else if (n.kind === 'hub') html += `<button class="node hub dark" data-open="${n.id}" style="${st}"><span class="lab">${l.lab}</span><span class="tt">${l.tt}</span></button>`;
+    else html += `<button class="node leaf ${n.br}" data-open="${n.id}" style="${st}padding-left:${icSize(n)+30}px;"><span class="t1">${l.t1}</span><span class="t2">${l.t2}</span></button>`;
   }
   stage.insertAdjacentHTML('afterbegin', html);
-})();
+}
 
 function fitStage() {
   const s = Math.min(innerWidth / W, innerHeight / H);
@@ -457,7 +528,6 @@ function setup() {
   brush.scaleBrushes(4.5);
   paperShader = createFilterShader(PAPER_FRAG);
   document.querySelector('#stage canvas').style.zIndex = 0;
-  document.querySelectorAll('.node').forEach(e => e.style.zIndex = 2);
 }
 function draw() {
   translate(-W / 2, -H / 2);
@@ -466,124 +536,511 @@ function draw() {
 }
 
 /* =====================================================================
-   INTERACTIVE PANELS
+   LANGUAGE + PANEL CONTENT
    ===================================================================== */
 const $ = (s, r = document) => r.querySelector(s);
 const panel = $('#panel'), headEl = $('#head'), bodyEl = $('#body'), cardEl = $('#card');
-const sec = (t, inner, tag = '') => `<h3>${t}${tag ? `<span class="tag">${tag}</span>` : ''}</h3>${inner}`;
-const pts = arr => `<div class="pts">${arr.map(([t, d]) => `<div class="pt"><b>${t}</b>${d}</div>`).join('')}</div>`;
+const sec = (t, inner) => `<h3>${t}</h3>${inner}`;
+const pts = (arr, cls = '') => `<div class="pts ${cls}">${arr.map(([t, d]) => `<div class="pt"><b>${t}</b>${d}</div>`).join('')}</div>`;
+const egs = arr => `<div class="egs">${arr.map(e => `<span>${e}</span>`).join('')}</div>`;
+
+const LANG_KEY = 'sem11.lang';
+let LANG_CUR = 'en';
+try { if (localStorage.getItem(LANG_KEY) === 'es') LANG_CUR = 'es'; } catch (e) {}
+
+const UI = {
+  en: { close: 'Close', key: 'Key idea', title: 'Mind map · Topics 3 & 4 · Databases and Information Systems' },
+  es: { close: 'Cerrar', key: 'Idea clave', title: 'Mapa mental interactivo · Temas 3 y 4 · Bases de datos y Sistemas de información' }
+};
+const noteBox = t => `<div class="note"><div><b class="lbl">${UI[LANG_CUR].key}</b>${t}</div></div>`;
+
+/* ---------- hand-drawn svg helpers for the panel figures ---------- */
+const INK = 'stroke="#2a2622" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"';
+const fig = (inner, cap, vb = '0 0 660 210', fh) => `<div class="fig"${fh ? ` style="--fh:${fh}px"` : ''}><svg viewBox="${vb}" preserveAspectRatio="xMidYMid meet" role="img">${inner}</svg>${cap ? `<div class="cap">${cap}</div>` : ''}</div>`;
+const bx = (x, y, w, h, fill = 'none', r = 8) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" ${INK} filter="url(#rough)"/>`;
+const gtx = (x, y, s, size = 15, fill = '#2a2622', anchor = 'middle', weight = 700) => `<text x="${x}" y="${y}" font-family="Georgia,serif" font-size="${size}" font-weight="${weight}" fill="${fill}" text-anchor="${anchor}">${s}</text>`;
+const gln = (x1, y1, x2, y2, c = '#2a2622', w = 2.2) => `<path d="M${x1} ${y1}L${x2} ${y2}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" filter="url(#rough)"/>`;
+const gar = (x1, y1, x2, y2, c = '#2a2622') => `<path d="M${x1} ${y1}L${x2} ${y2}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" marker-end="url(#ah)"/>`;
+const gdot = (x, y, r = 9, fill = '#c3d7e8') => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="#2a2622" stroke-width="2"/>`;
+
+const FIGS = {
+  root: c => fig(`
+    ${bx(150, 6, 360, 46, '#235283', 10)}${gtx(330, 36, c.fA, 17, '#fff6e4')}
+    ${bx(210, 82, 240, 46, '#2b3556', 10)}${gtx(330, 112, c.fB, 17, '#fff6e4')}
+    ${bx(150, 158, 360, 46, '#a34a29', 10)}${gtx(330, 188, c.fC, 17, '#fff6e4')}
+    ${gln(330, 52, 330, 82)}${gln(330, 128, 330, 158)}
+    ${gdot(96, 29)}${gln(105, 29, 150, 29)}${gdot(96, 181, 9, '#f4d3b8')}${gln(105, 181, 150, 181)}
+    ${gdot(564, 29, 9, '#c3d7e8')}${gln(510, 29, 555, 29)}${gdot(564, 181, 9, '#f4d3b8')}${gln(510, 181, 555, 181)}
+  `, c.cap),
+
+  rel: c => fig(`
+    ${bx(28, 54, 342, 118, '#f8fbfd', 6)}
+    ${bx(28, 54, 342, 32, '#2f5f8f', 6)}
+    ${gtx(70, 75, 'id', 14, '#fff6e4')}${gtx(170, 75, c.fName, 14, '#fff6e4')}${gtx(297, 75, c.fCity, 14, '#fff6e4')}
+    ${gln(28, 86, 370, 86, '#2a2622', 1.5)}${gln(28, 128, 370, 128, '#2a2622', 1.2)}
+    ${gln(113, 54, 113, 172, '#2a2622', 1.2)}${gln(227, 54, 227, 172, '#2a2622', 1.2)}
+    ${gtx(70, 112, '1', 14, '#2a2622')}${gtx(170, 112, 'Ana', 14, '#2a2622')}${gtx(297, 112, 'Madrid', 14, '#2a2622')}
+    ${gtx(70, 154, '2', 14, '#2a2622')}${gtx(170, 154, 'Luis', 14, '#2a2622')}${gtx(297, 154, '—', 14, '#a9a294')}
+    ${gdot(70, 40, 11, '#fbe7a8')}${gtx(70, 45, c.fPk, 11, '#7a3317')}
+    ${bx(462, 96, 168, 76, '#fdf5ec', 6)}${bx(462, 96, 168, 28, '#b9532f', 6)}${gtx(546, 115, c.fOrders, 14, '#fff6e4')}
+    ${gln(462, 124, 630, 124, '#2a2622', 1.2)}${gln(462, 148, 630, 148, '#2a2622', 1.2)}
+    ${gtx(546, 140, '101', 13)}${gtx(546, 166, '102', 13)}
+    ${gar(372, 148, 452, 130, '#b9532f')}${gtx(360, 188, c.fFk, 14, '#b9532f')}
+  `, c.cap),
+
+  nosql: c => fig(`
+    ${bx(32, 20, 118, 104, '#fdf5ec', 8)}
+    ${gln(50, 46, 132, 46, '#b9532f', 2.4)}${gln(50, 64, 120, 64, '#8a8175', 2.2)}${gln(50, 82, 132, 82, '#8a8175', 2.2)}${gln(50, 100, 108, 100, '#8a8175', 2.2)}
+    ${gtx(91, 152, 'Document', 15)}
+    ${bx(192, 20, 118, 104, '#f8fbfd', 8)}
+    ${bx(206, 40, 42, 26, '#c3d7e8', 6)}${bx(206, 78, 42, 26, '#c3d7e8', 6)}
+    ${gtx(247, 58, '→', 16, '#2a2622', 'middle')}${gtx(247, 96, '←', 16, '#2a2622', 'middle')}
+    ${gln(262, 53, 292, 53, '#8a8175', 2)}${gln(262, 91, 292, 91, '#8a8175', 2)}
+    ${gtx(251, 152, 'Key-Value', 15)}
+    ${bx(352, 20, 118, 104, '#f4d3b8', 8)}
+    ${gln(382, 24, 382, 120, '#2a2622', 1.4)}${gln(412, 24, 412, 120, '#2a2622', 1.4)}${gln(442, 24, 442, 120, '#2a2622', 1.4)}
+    ${gln(356, 48, 466, 48, '#2a2622', 1.2)}${gln(356, 76, 466, 76, '#2a2622', 1.2)}${gln(356, 100, 408, 100, '#2a2622', 1.2)}
+    ${gtx(411, 152, 'Column', 15)}
+    ${bx(512, 20, 118, 104, '#f2f7f1', 8)}
+    ${gln(536, 62, 572, 48)}${gln(572, 48, 606, 78)}${gln(536, 62, 566, 92)}${gln(566, 92, 606, 78)}
+    ${gdot(536, 62, 11, '#c3d7e8')}${gdot(572, 48, 11, '#e29a6f')}${gdot(606, 78, 11, '#fbe7a8')}${gdot(566, 92, 11, '#cfe8d3')}
+    ${gtx(571, 152, 'Graph', 15)}
+  `, c.cap, '0 0 660 168'),
+
+  cmp: c => fig(`
+    ${gln(330, 34, 330, 180)}${gln(268, 182, 392, 182, '#2a2622', 2.6)}
+    ${gln(176, 58, 484, 74)}
+    ${gln(176, 58, 176, 84)}${gln(484, 74, 484, 100)}
+    <ellipse cx="176" cy="96" rx="38" ry="11" fill="#c3d7e8" stroke="#2a2622" stroke-width="2" filter="url(#rough)"/>
+    <ellipse cx="484" cy="112" rx="38" ry="11" fill="#f4d3b8" stroke="#2a2622" stroke-width="2" filter="url(#rough)"/>
+    ${gdot(330, 34, 8, '#e3a72f')}
+    ${gtx(176, 146, c.fL, 15, '#2f5f8f')}${gtx(484, 162, c.fR, 15, '#b9532f')}
+    ${gtx(330, 56, '?', 20, '#6b6358')}
+  `, c.cap),
+
+  t4: c => fig(`
+    ${gln(330, 105, 555, 105, '#2a2622', 1.8)}${gln(330, 105, 399, 175, '#2a2622', 1.8)}
+    ${gln(330, 105, 148, 148, '#2a2622', 1.8)}${gln(330, 105, 148, 61, '#2a2622', 1.8)}${gln(330, 105, 399, 35, '#2a2622', 1.8)}
+    ${bx(240, 78, 180, 54, '#2b3556', 10)}
+    ${gtx(330, 100, 'Information', 15, '#fff6e4')}${gtx(330, 120, 'System', 15, '#fff6e4')}
+    ${bx(503, 88, 104, 34, '#c3d7e8', 8)}${gtx(555, 110, 'Hardware', 14)}
+    ${bx(347, 158, 104, 34, '#f4d3b8', 8)}${gtx(399, 180, 'Software', 14)}
+    ${bx(96, 131, 104, 34, '#fbe7a8', 8)}${gtx(148, 153, 'Data', 14)}
+    ${bx(96, 44, 104, 34, '#cfe8d3', 8)}${gtx(148, 66, 'People', 14)}
+    ${bx(347, 18, 104, 34, '#e29a6f', 8)}${gtx(399, 40, 'Processes', 14)}
+  `, c.cap),
+
+  hw: c => fig(`
+    ${bx(26, 34, 176, 56, '#c3d7e8', 10)}${gtx(114, 68, 'Input', 16)}
+    ${bx(242, 34, 176, 56, '#fbe7a8', 10)}${gtx(330, 68, 'Processing', 16)}
+    ${bx(458, 34, 176, 56, '#f4d3b8', 10)}${gtx(546, 68, 'Output', 16)}
+    ${gar(206, 62, 236, 62)}${gar(422, 62, 452, 62)}
+    ${bx(242, 130, 176, 40, '#f2f7f1', 10)}${gtx(330, 156, 'Storage', 16)}
+    ${gar(312, 126, 312, 96)}${gar(348, 96, 348, 126)}
+  `, c.cap, '0 0 660 180'),
+
+  sw: c => fig(`
+    ${bx(36, 14, 588, 44, '#f4d3b8', 10)}${gtx(330, 42, 'Application software', 16)}
+    ${bx(36, 66, 588, 44, '#fbe7a8', 10)}${gtx(330, 94, 'System software', 16)}
+    ${bx(36, 118, 588, 44, '#c3d7e8', 10)}${gtx(330, 146, 'Hardware', 16)}
+    ${gdot(78, 36, 10, '#fff')}${gdot(108, 36, 10, '#fff')}${gdot(138, 36, 10, '#fff')}
+    ${gdot(78, 88, 10, '#fff')}${gdot(108, 88, 10, '#fff')}
+  `, c.cap, '0 0 660 176'),
+
+  data: c => fig(`
+    <path d="M66 186 L594 186 L512 144 L148 144 Z" fill="#f4d3b8" ${INK} filter="url(#rough)"/>
+    <path d="M148 144 L512 144 L442 100 L218 100 Z" fill="#fbe7a8" ${INK} filter="url(#rough)"/>
+    <path d="M218 100 L442 100 L384 58 L276 58 Z" fill="#c3d7e8" ${INK} filter="url(#rough)"/>
+    ${gtx(330, 168, 'Data', 16)}${gtx(330, 124, 'Information', 16)}${gtx(330, 81, 'Knowledge', 15)}
+    ${gtx(596, 70, '37.0', 15, '#6b6358')}${gtx(596, 94, '38.5', 15, '#6b6358')}${gtx(596, 118, '40.1', 15, '#6b6358')}
+    ${gtx(596, 152, c.fUp, 15, '#b9532f')}
+  `, c.cap, '0 0 660 210', 250),
+
+  people: c => fig(`
+    ${bx(238, 12, 184, 40, '#2b3556', 8)}${gtx(330, 38, 'IT Manager', 14, '#fff6e4')}
+    ${bx(84, 92, 156, 40, '#c3d7e8', 8)}${gtx(162, 118, 'Systems Analyst', 13)}
+    ${bx(252, 92, 156, 40, '#fbe7a8', 8)}${gtx(330, 118, 'Developer', 14)}
+    ${bx(420, 92, 156, 40, '#f4d3b8', 8)}${gtx(498, 118, 'DBA', 14)}
+    ${bx(238, 164, 184, 40, '#cfe8d3', 8)}${gtx(330, 190, 'End user', 14)}
+    ${gln(330, 52, 330, 72)}${gln(162, 72, 498, 72)}${gln(162, 72, 162, 92)}${gln(330, 72, 330, 92)}${gln(498, 72, 498, 92)}
+    ${gln(330, 132, 330, 164)}
+  `, c.cap, '0 0 660 210', 262),
+
+  proc: c => fig(c.steps.map((s, i) => {
+    const x = 34 + i * 120, fill = i % 2 ? '#e29a6f' : '#f4d3b8';
+    return `<path d="M${x} 24 H${x + 92} L${x + 108} 66 L${x + 92} 108 H${x} L${x + 16} 66 Z" fill="${fill}" ${INK} filter="url(#rough)"/>
+      ${gtx(x + 58, 72, s, 15)}`;
+  }).join(''), c.cap, '0 0 660 132'),
+};
+
+/* =====================================================================
+   COPY (EN / ES) — underlined key terms stay in English in both
+   ===================================================================== */
+const COPY = {
+en: {
+  'root-info': {
+    title:'Topics 3 & 4 · Overview', sub:'Data and <u>Information Systems</u>', eyebrow:'THE MAP',
+    h1:'In one line', p1:'Topic 3 stores the <u>Data</u>; Topic 4 explains the parts of an <u>Information System</u>.',
+    cap:'One map, two topics: the data on one side, the whole system on the other.',
+    fA:'TOPIC 3', fB:'Topics 3 & 4', fC:'TOPIC 4',
+    h2:'The two topics',
+    c1t:'Topic 3', c1d:'Databases: <u>Relational</u> (tables + <u>SQL</u>) or <u>Non-Relational</u> (<u>NoSQL</u>).',
+    c2t:'Topic 4', c2d:'Five parts: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> and <u>Processes</u>.',
+    note:'The <u>Database</u> is where both topics meet: it is the part of the system where the <u>Data</u> lives.',
+    b1:'Topic 3 · Databases', b2:'Topic 4 · Components'
+  },
+  't3': {
+    title:'Topic 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub:'Databases: two ways to organise information', eyebrow:'TOPIC 3 · DATABASES',
+    h1:'Two ways to store', p1:'Same people, different <u>Schema</u>. Switch the model:',
+    bR:'Relational (tables)', bN:'Non-Relational (documents)',
+    cap:'Fixed columns vs. free-form documents: the same information, two shapes.',
+    fName:'name', fCity:'city', fHobby:'hobbies', fPremium:'premium', hobby:'football, cinema',
+    fbR:'🧱 Every <u>row</u> keeps the same columns: a fixed <u>Schema</u>.',
+    fbN:'🧩 Each <u>document</u> stores only what it needs: a flexible <u>Schema</u>.',
+    h2:'Go deeper', b1:'Relational model ▶', b2:'Non-Relational model ▶', b3:'Comparison ▶',
+    note:'Topic 3 is the <u>Data</u> component of Topic 4: the <u>Database</u> is where the system keeps its memory.'
+  },
+  'rel': {
+    title:'Relational model · <u>Relational Database</u>', sub:'Tables, keys and <u>SQL</u>', eyebrow:'TOPIC 3 · <u>SQL</u>',
+    h1:'What is it?', p1:'Data in <u>tables</u> with rows and columns; tables are linked by keys and queried with <u>SQL</u>.',
+    cap:'A <u>Primary Key</u> identifies one row; a <u>Foreign Key</u> points to a row in another table.',
+    fPk:'PK', fFk:'FK', fName:'name', fCity:'city', fOrders:'orders',
+    h2:'Key concepts',
+    k:[['<u>Primary Key</u>','Identifies each row (id).'],['<u>Foreign Key</u>','Links to another table.'],['Fixed <u>Schema</u>','Columns and types set before saving.'],['<u>ACID</u>','Atomicity · Consistency · Isolation · Durability.']],
+    h3:'Examples', p3:'MySQL · PostgreSQL · Oracle Database · SQL Server.',
+    note:'A fixed <u>Schema</u> gives predictable reports — that is why banks and payroll still rely on it.'
+  },
+  'nosql': {
+    title:'Non-relational model · <u>NoSQL</u>', sub:'<u>Non-Relational Databases</u>: flexible and scalable', eyebrow:'TOPIC 3 · <u>NOSQL</u>',
+    h1:'What is it?', p1:'No fixed tables: each record stores only what it needs, with a flexible <u>Schema</u> and <u>horizontal scaling</u>.',
+    cap:'Four families: documents, key-value, column and graph.',
+    h2:'Four types',
+    k:[['<u>Document</u>','JSON records · MongoDB.'],['<u>Key-Value</u>','Key → value · Redis.'],['<u>Column-family</u>','Columns per row · Cassandra.'],['<u>Graph</u>','Nodes and edges · Neo4j.']],
+    h3:'When to use it', p3:'<u>Big Data</u>, real time, social networks and fast-changing data.',
+    note:'Start from the shape of the data, not from the trend: <u>NoSQL</u> wins when the <u>Schema</u> keeps changing.'
+  },
+  'cmp': {
+    title:'Comparison · <u>Relational</u> vs <u>Non-Relational</u>', sub:'Which one, and when?', eyebrow:'TOPIC 3 · CHOOSING',
+    h1:'Side by side', th1:'<u>Relational</u> (<u>SQL</u>)', th2:'<u>Non-Relational</u> (<u>NoSQL</u>)',
+    rows:[['<u>Schema</u>','Fixed, defined up front','Flexible, changes easily'],
+          ['Structure','<u>Tables</u>, rows, columns','<u>Documents</u>, <u>key-value</u>, <u>column</u>, <u>graph</u>'],
+          ['<u>Scalability</u>','Vertical (bigger server)','Horizontal (more servers)'],
+          ['Consistency','<u>ACID</u>: strict','<u>BASE</u>: eventual'],
+          ['Relations','<u>JOIN</u> between tables','Nested data or links'],
+          ['Examples','MySQL, PostgreSQL, Oracle','MongoDB, Redis, Cassandra, Neo4j']],
+    fL:'Relational', fR:'Non-Relational',
+    cap:'Neither wins: the use case decides.',
+    note:'💡 <b>Rule of thumb:</b> <u>Relational</u> when you need accuracy and relations; <u>Non-Relational</u> when you need flexibility and scale. Many apps use both.'
+  },
+  't4': {
+    title:'Topic 4 · <u>Information Systems</u>', sub:'Five parts working together', eyebrow:'TOPIC 4 · SYSTEMS',
+    h1:'What is it?', p1:'A set of components that <b>collects, stores, processes and distributes</b> information to support decisions and daily operations.',
+    cap:'The five components feed each other; none of them works alone.',
+    h2:'Five components', p2:'Open one:',
+    note:'Remove one component and the system stops: <u>People</u> design the <u>Processes</u>, the <u>Software</u> runs on the <u>Hardware</u> and the <u>Data</u> is the memory.'
+  },
+  'hw': {
+    title:'<u>Hardware</u>', sub:'The physical parts of the system', eyebrow:'TOPIC 4 · <u>HARDWARE</u>',
+    h1:'What is it?', p1:'Everything <b>physical</b>: devices, servers, networks and peripherals.',
+    cap:'Input → Processing → Output, with Storage keeping the results.',
+    h2:'Four stages',
+    k:[['<u>Input</u>','Keyboard, mouse, microphone, camera.'],['<u>Processing</u>','CPU, GPU, RAM.'],['<u>Output</u>','Monitor, printer, speakers.'],['<u>Storage</u>','SSD/HDD, USB stick, cloud.']],
+    note:'<u>Storage</u> is the bridge to <u>Data</u>: without it, every result disappears when the power goes off.'
+  },
+  'sw': {
+    title:'<u>Software</u>', sub:'Programs that give orders to the hardware', eyebrow:'TOPIC 4 · <u>SOFTWARE</u>',
+    h1:'What is it?', p1:'The logical instructions that tell the <u>Hardware</u> what to do.',
+    cap:'Applications sit on system software, which sits on the hardware.',
+    h2:'Two families',
+    k:[['<u>System software</u>','Operating system, drivers, utilities.'],['<u>Application software</u>','User apps: Excel, Chrome, WhatsApp.']],
+    h3:'<u>Database</u> software', p3:'A <u>DBMS</u> (MySQL, MongoDB) manages the databases from Topic 3.',
+    note:'The same <u>Hardware</u> behaves differently depending on the <u>Software</u> running on it.'
+  },
+  'data': {
+    title:'<u>Data</u>', sub:'From loose facts to knowledge', eyebrow:'TOPIC 4 · <u>DATA</u>',
+    h1:'<u>Data</u> → <u>Information</u> → <u>Knowledge</u>', p1:'Loose facts → data with context → knowledge for deciding.',
+    p2:'<b>Example:</b> 37.0 · 38.5 · 40.1 → up 3.1 °C → fever: call the doctor.', fUp:'+3.1 °C',
+    cap:'Each step adds context; only the last one supports a decision.',
+    h2:'Types',
+    k:[['<u>Structured</u>','Tables: sales, inventory (<u>Relational</u>).'],['<u>Unstructured</u>','No fixed format: photos, video, email (<u>Non-Relational</u>).']],
+    note:'Where is it stored? In a <u>Database</u> from Topic 3.'
+  },
+  'people': {
+    title:'<u>People</u>', sub:'Who uses, builds and runs the system', eyebrow:'TOPIC 4 · <u>PEOPLE</u>',
+    h1:'Main roles',
+    k:[['<u>End user</u>','Uses the system every day.'],['<u>Developer</u>','Builds and maintains apps.'],['<u>DBA</u>','Runs the databases.'],['<u>Systems Analyst</u>','Turns needs into requirements.'],['<u>IT Manager</u>','Leads team, budget and strategy.']],
+    h4:'Skills they share', egs:['Communication','Analysis','Training','Teamwork','Support'],
+    cap:'Roles connect the business need with the technical solution.',
+    note:'The best system fails without trained <u>People</u>: training is part of the system.'
+  },
+  'proc': {
+    title:'<u>Processes</u>', sub:'The steps that organise the work', eyebrow:'TOPIC 4 · <u>PROCESSES</u>',
+    h1:'What are they?', p1:'An ordered sequence of steps that turns inputs into results: policies, procedures and <u>workflows</u>.',
+    steps:['Choose','Pay','Validate','Ship','Deliver'],
+    h3:'Policies and procedures', k:[['Policies','Rules that say what must be done.'],['Procedures','Step-by-step instructions on how to do it.']],
+    cap:'Example: an online purchase, step by step.',
+    h2:'Example: online purchase', p2:'1. Choose product → 2. Pay → 3. Validate payment → 4. Prepare shipment → 5. Deliver.',
+    note:'Without <u>Processes</u>, hardware, software and people do not know how to coordinate.'
+  },
+},
+es: {
+  'root-info': {
+    title:'Temas 3 y 4 · Visión general', sub:'Datos y <u>Information Systems</u>', eyebrow:'EL MAPA',
+    h1:'En una frase', p1:'El <b>Tema 3</b> guarda los <u>Data</u>; el <b>Tema 4</b> explica las piezas del <u>Information System</u>.',
+    cap:'Un mapa, dos temas: los datos por un lado y el sistema completo por el otro.',
+    fA:'TEMA 3', fB:'Temas 3 y 4', fC:'TEMA 4',
+    h2:'Los dos temas',
+    c1t:'Tema 3', c1d:'Bases de datos: <u>Relational</u> (tablas + <u>SQL</u>) o <u>Non-Relational</u> (<u>NoSQL</u>).',
+    c2t:'Tema 4', c2d:'Cinco componentes: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> y <u>Processes</u>.',
+    note:'La <u>Database</u> es el punto donde ambos temas se tocan: es la parte del sistema donde viven los <u>Data</u>.',
+    b1:'Tema 3 · Bases de datos', b2:'Tema 4 · Componentes'
+  },
+  't3': {
+    title:'Tema 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub:'Bases de datos: dos formas de organizar la información', eyebrow:'TEMA 3 · BASES DE DATOS',
+    h1:'Dos formas de guardar', p1:'Misma información, distinto <u>Schema</u>. Cambia el modelo:',
+    bR:'Relational (tablas)', bN:'Non-Relational (documentos)',
+    cap:'Columnas fijas vs. documentos libres: la misma información, dos formas.',
+    fName:'nombre', fCity:'ciudad', fHobby:'hobbies', fPremium:'premium', hobby:'fútbol, cine',
+    fbR:'🧱 Todas las filas (<u>row</u>) tienen las mismas columnas: <u>Schema</u> fijo.',
+    fbN:'🧩 Cada <u>document</u> guarda solo lo que necesita: <u>Schema</u> flexible.',
+    h2:'Explora cada rama', b1:'Modelo relacional ▶', b2:'Modelo no relacional ▶', b3:'Comparación ▶',
+    note:'El Tema 3 es el componente <u>Data</u> del Tema 4: la <u>Database</u> es la memoria del sistema.'
+  },
+  'rel': {
+    title:'Modelo relacional · <u>Relational Database</u>', sub:'Tablas, llaves y <u>SQL</u>', eyebrow:'TEMA 3 · <u>SQL</u>',
+    h1:'¿Qué es?', p1:'Datos en <u>tables</u> con filas y columnas; las tablas se relacionan con llaves y se consultan con <u>SQL</u>.',
+    cap:'La <u>Primary Key</u> identifica una fila; la <u>Foreign Key</u> apunta a otra tabla.',
+    fPk:'PK', fFk:'FK', fName:'nombre', fCity:'ciudad', fOrders:'pedidos',
+    h2:'Conceptos clave',
+    k:[['<u>Primary Key</u>','Identifica cada fila (id).'],['<u>Foreign Key</u>','Enlaza con otra tabla.'],['<u>Schema</u> fijo','Columnas y tipos definidos antes de guardar.'],['<u>ACID</u>','Atomicity · Consistency · Isolation · Durability.']],
+    h3:'Ejemplos', p3:'MySQL · PostgreSQL · Oracle Database · SQL Server.',
+    note:'El <u>Schema</u> fijo da reportes predecibles: por eso lo siguen usando los bancos y la nómina.'
+  },
+  'nosql': {
+    title:'Modelo no relacional · <u>NoSQL</u>', sub:'<u>Non-Relational Databases</u>: flexibles y escalables', eyebrow:'TEMA 3 · <u>NOSQL</u>',
+    h1:'¿Qué es?', p1:'No usa tablas fijas: cada registro guarda solo lo que necesita, con <u>Schema</u> flexible y <u>horizontal scaling</u>.',
+    cap:'Cuatro familias: documentos, clave-valor, columnas y grafos.',
+    h2:'Cuatro tipos',
+    k:[['<u>Document</u>','Registros JSON · MongoDB.'],['<u>Key-Value</u>','Clave → valor · Redis.'],['<u>Column-family</u>','Columnas por fila · Cassandra.'],['<u>Graph</u>','Nodos y relaciones · Neo4j.']],
+    h3:'Cuándo usarla', p3:'<u>Big Data</u>, tiempo real, redes sociales y datos que cambian mucho.',
+    note:'Empieza por la forma de los datos, no por la moda: <u>NoSQL</u> gana cuando el <u>Schema</u> cambia todo el tiempo.'
+  },
+  'cmp': {
+    title:'Comparación · <u>Relational</u> vs <u>Non-Relational</u>', sub:'¿Cuál elegir y cuándo?', eyebrow:'TEMA 3 · ELEGIR',
+    h1:'Lado a lado', th1:'<u>Relational</u> (<u>SQL</u>)', th2:'<u>Non-Relational</u> (<u>NoSQL</u>)',
+    rows:[['<u>Schema</u>','Fijo, definido de antemano','Flexible, cambia fácil'],
+          ['Estructura','<u>Tables</u>, filas y columnas','<u>Documents</u>, <u>key-value</u>, <u>column</u>, <u>graph</u>'],
+          ['<u>Scalability</u>','Vertical (servidor más potente)','Horizontal (más servidores)'],
+          ['Consistencia','<u>ACID</u>: muy estricta','<u>BASE</u>: eventual'],
+          ['Relaciones','<u>JOIN</u> entre tablas','Datos anidados o enlaces'],
+          ['Ejemplos','MySQL, PostgreSQL, Oracle','MongoDB, Redis, Cassandra, Neo4j']],
+    fL:'Relational', fR:'Non-Relational',
+    cap:'Ninguno es mejor: decide el caso de uso.',
+    note:'💡 <b>Regla práctica:</b> <u>Relational</u> si necesitas exactitud y relaciones; <u>Non-Relational</u> si necesitas flexibilidad y escala. Muchas apps usan ambas.'
+  },
+  't4': {
+    title:'Tema 4 · <u>Information Systems</u>', sub:'Cinco componentes que trabajan juntos', eyebrow:'TEMA 4 · SISTEMAS',
+    h1:'¿Qué es?', p1:'Conjunto de componentes que <b>recolecta, guarda, procesa y distribuye</b> información para apoyar decisiones y operaciones.',
+    cap:'Los cinco componentes se alimentan entre sí; ninguno funciona solo.',
+    h2:'Cinco componentes', p2:'Abre uno:',
+    note:'Quita un componente y el sistema deja de funcionar: las <u>People</u> diseñan los <u>Processes</u>, el <u>Software</u> corre sobre el <u>Hardware</u> y los <u>Data</u> son la memoria.'
+  },
+  'hw': {
+    title:'<u>Hardware</u>', sub:'Las partes físicas del sistema', eyebrow:'TEMA 4 · <u>HARDWARE</u>',
+    h1:'¿Qué es?', p1:'Todo lo <b>físico</b>: equipos, servidores, redes y periféricos.',
+    cap:'Input → Processing → Output, con Storage guardando los resultados.',
+    h2:'Cuatro etapas',
+    k:[['<u>Input</u>','Teclado, mouse, micrófono, cámara.'],['<u>Processing</u>','CPU, GPU, memoria RAM.'],['<u>Output</u>','Monitor, impresora, bocinas.'],['<u>Storage</u>','SSD/HDD, USB, nube.']],
+    note:'El <u>Storage</u> es el puente hacia los <u>Data</u>: sin él, cada resultado desaparece al apagar.'
+  },
+  'sw': {
+    title:'<u>Software</u>', sub:'Los programas que dan órdenes al hardware', eyebrow:'TEMA 4 · <u>SOFTWARE</u>',
+    h1:'¿Qué es?', p1:'Las instrucciones lógicas que le dicen al <u>Hardware</u> qué hacer.',
+    cap:'Las aplicaciones se apoyan en el sistema operativo, que se apoya en el hardware.',
+    h2:'Dos familias',
+    k:[['<u>System software</u>','Sistema operativo, drivers y utilidades.'],['<u>Application software</u>','Apps de usuario: Excel, Chrome, WhatsApp.']],
+    h3:'<u>Database</u> software', p3:'Un <u>DBMS</u> (MySQL, MongoDB) administra las bases de datos del Tema 3.',
+    note:'El mismo <u>Hardware</u> se comporta distinto según el <u>Software</u> que corre encima.'
+  },
+  'data': {
+    title:'Datos · <u>Data</u>', sub:'De hechos sueltos a conocimiento', eyebrow:'TEMA 4 · <u>DATA</u>',
+    h1:'<u>Data</u> → <u>Information</u> → <u>Knowledge</u>', p1:'Hechos sueltos → datos con contexto → conocimiento para decidir.',
+    p2:'<b>Ejemplo:</b> 37.0 · 38.5 · 40.1 → subió 3.1 °C → fiebre: avisar al médico.', fUp:'+3.1 °C',
+    cap:'Cada paso agrega contexto; solo el último permite decidir.',
+    h2:'Tipos',
+    k:[['<u>Structured</u>','En tablas: ventas, inventarios (<u>Relational</u>).'],['<u>Unstructured</u>','Sin formato fijo: fotos, videos, correos (<u>Non-Relational</u>).']],
+    note:'¿Dónde se guardan? En una <u>Database</u> del Tema 3.'
+  },
+  'people': {
+    title:'Personas · <u>People</u>', sub:'Quienes usan, construyen y administran el sistema', eyebrow:'TEMA 4 · <u>PEOPLE</u>',
+    h1:'Roles principales',
+    k:[['<u>End user</u>','Usa el sistema a diario.'],['<u>Developer</u>','Programa y mantiene apps.'],['<u>DBA</u>','Administra las bases de datos.'],['<u>Systems Analyst</u>','Traduce necesidades a requisitos.'],['<u>IT Manager</u>','Dirige equipo, presupuesto y estrategia.']],
+    h4:'Habilidades en común', egs:['Comunicación','Análisis','Capacitación','Trabajo en equipo','Soporte'],
+    cap:'Los roles conectan la necesidad del negocio con la solución técnica.',
+    note:'El mejor sistema fracasa sin <u>People</u> capacitadas: la formación es parte del sistema.'
+  },
+  'proc': {
+    title:'Procesos · <u>Processes</u>', sub:'Los pasos que organizan el trabajo', eyebrow:'TEMA 4 · <u>PROCESSES</u>',
+    h1:'¿Qué son?', p1:'Secuencia ordenada de pasos que convierte entradas en resultados: políticas, procedimientos y <u>workflows</u>.',
+    steps:['Elegir','Pagar','Validar','Enviar','Entregar'],
+    h3:'Políticas y procedimientos', k:[['Políticas','Reglas que dicen qué debe hacerse.'],['Procedimientos','Pasos de cómo hacerlo.']],
+    cap:'Ejemplo: una compra en línea, paso a paso.',
+    h2:'Ejemplo: compra en línea', p2:'1. Elegir producto → 2. Pagar → 3. Validar pago → 4. Preparar envío → 5. Entregar.',
+    note:'Sin <u>Processes</u>, el hardware, el software y las personas no saben coordinarse.'
+  },
+},
+};
+
+/* =====================================================================
+   PANEL DEFINITIONS
+   ===================================================================== */
+const toggleCls = (btns, fn) => btns.forEach(b => b.onclick = () => { btns.forEach(x => x.classList.remove('on')); b.classList.add('on'); fn(b); });
+
+const PANEL_DEFS = {
+  'root-info': { color:'#2b3556',
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.root(c)
+        + sec(c.h2, pts([[c.c1t, c.c1d], [c.c2t, c.c2d]]))
+        + noteBox(c.note)
+        + `<p style="margin-top:12px"><button class="btn" data-open="t3">${c.b1}</button><button class="btn" data-open="t4" style="--c:#b9532f;border-color:#b9532f">${c.b2}</button></p>` }) },
+
+  't3': { color:C.blue,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>
+        <button class="btn on" data-m="r">${c.bR}</button><button class="btn" data-m="n">${c.bN}</button>
+        <div class="lab-box" id="vs"></div>`)
+        + sec(c.h2, `<button class="btn" data-open="rel">${c.b1}</button><button class="btn" data-open="nosql">${c.b2}</button><button class="btn" data-open="cmp">${c.b3}</button>`)
+        + noteBox(c.note) }),
+    init(r, c) {
+      const vs = $('#vs', r);
+      const draw = m => {
+        if (m === 'r') {
+          vs.innerHTML = `<table class="db"><tr><th>id</th><th>${c.fName}</th><th>${c.fCity}</th><th>${c.fHobby}</th><th>${c.fPremium}</th></tr>
+            <tr><td>1</td><td>Ana</td><td>Madrid</td><td class="null">NULL</td><td class="null">NULL</td></tr>
+            <tr><td>2</td><td>Luis</td><td class="null">NULL</td><td>${c.hobby}</td><td>true</td></tr></table>
+            <div class="fb">${c.fbR}</div>`;
+        } else {
+          vs.innerHTML = `<div class="row2"><div class="code" style="flex:1">{\n  "_id": 1,\n  "nombre": "Ana",\n  "ciudad": "Madrid"\n}</div><div class="code" style="flex:1">{\n  "_id": 2,\n  "nombre": "Luis",\n  "hobbies": ["${c.hobby}"],\n  "premium": true\n}</div></div>
+            <div class="fb">${c.fbN}</div>`;
+        }
+      };
+      draw('r');
+      toggleCls([...r.querySelectorAll('[data-m]')], b => draw(b.dataset.m));
+    } },
+
+  'rel': { color:C.blue,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.rel(c)
+        + sec(c.h2, pts(c.k))
+        + sec(c.h3, `<p>${c.p3}</p>`)
+        + noteBox(c.note) }) },
+
+  'nosql': { color:C.blue,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.nosql(c)
+        + sec(c.h2, pts(c.k))
+        + sec(c.h3, `<p>${c.p3}</p>`)
+        + noteBox(c.note) }) },
+
+  'cmp': { color:C.blue,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: `<table class="compare"><tr><th></th><th>${c.th1}</th><th>${c.th2}</th></tr>${c.rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</table>`
+        + FIGS.cmp(c) + noteBox(c.note) }) },
+
+  't4': { color:C.terra,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.t4(c)
+        + sec(c.h2, `<p>${c.p2}</p><div class="chips" id="comps"></div>`)
+        + noteBox(c.note) }),
+    init(r) {
+      const C5 = [['hw', 'Hardware'], ['sw', 'Software'], ['data', 'Data'], ['people', 'People'], ['proc', 'Processes']];
+      $('#comps', r).innerHTML = C5.map(([id, n]) => `<span class="chipn chipimg" data-c="${id}" data-open="${id}">${CROPS[id] ? `<img src="${CROPS[id]}" alt="">` : ''}<u>${n}</u></span>`).join('');
+    } },
+
+  'hw': { color:C.terra,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.hw(c)
+        + sec(c.h2, pts(c.k)) + noteBox(c.note) }) },
+
+  'sw': { color:C.terra,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.sw(c)
+        + sec(c.h2, pts(c.k))
+        + sec(c.h3, `<p>${c.p3}</p>`)
+        + noteBox(c.note) }) },
+
+  'data': { color:C.terra,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p><p>${c.p2}</p>`) + FIGS.data(c)
+        + sec(c.h2, pts(c.k)) + noteBox(c.note) }) },
+
+  'people': { color:C.terra,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, '') + FIGS.people(c)
+        + pts(c.k, 'five')
+        + sec(c.h4, egs(c.egs)) + noteBox(c.note) }) },
+
+  'proc': { color:C.terra,
+    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
+      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.proc(c)
+        + sec(c.h2, `<p>${c.p2}</p>`)
+        + sec(c.h3, pts(c.k)) + noteBox(c.note) }) },
+};
+
+/* --------------------------------------------------------------------- */
+let OPEN_ID = null;
+
+const swHTML = () => `<div class="langsw hdr-sw" role="group" aria-label="Language">
+  <button data-lang="en">EN</button><button data-lang="es">ES</button></div>`;
+
+function syncSw() {
+  document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === LANG_CUR));
+}
 
 function openPanel(id) {
-  const P = PANELS[id]; if (!P) return;
-  cardEl.style.setProperty('--c', P.color);
-  const img = CROPS[P.img || id];
-  headEl.innerHTML = `${img ? `<img src="${img}" alt="">` : ''}<div><div class="ttl">${P.title}</div><div class="sub">${P.sub}</div></div><button id="close">✕ Cerrar</button>`;
+  const D = PANEL_DEFS[id]; if (!D) return;
+  const c = COPY[LANG_CUR][id], P = D.build(c);
+  OPEN_ID = id;
+  cardEl.style.setProperty('--c', D.color);
+  const img = CROPS[id];
+  headEl.innerHTML = `${img ? `<img src="${img}" alt="">` : ''}
+    <div class="headtx"><div class="eyebrow">${P.eyebrow || ''}</div><div class="ttl">${P.title}</div><div class="sub">${P.sub}</div></div>
+    ${swHTML()}<button id="close">✕ ${UI[LANG_CUR].close}</button>`;
   bodyEl.innerHTML = P.html;
   bodyEl.scrollTop = 0;
-  P.init && P.init(bodyEl);
+  D.init && D.init(bodyEl, c);
   panel.classList.add('open');
   $('#close').onclick = closePanel;
+  syncSw();
 }
-function closePanel() { panel.classList.remove('open'); }
+function closePanel() { panel.classList.remove('open'); OPEN_ID = null; }
+
+function setLang(l) {
+  if (l !== 'es') l = 'en';
+  if (l === LANG_CUR) return;
+  LANG_CUR = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch (e) {}
+  applyLang();
+}
+function applyLang() {
+  document.documentElement.lang = LANG_CUR;
+  document.title = UI[LANG_CUR].title;
+  buildMap();
+  syncSw();
+  if (OPEN_ID && panel.classList.contains('open')) openPanel(OPEN_ID);
+}
+
 addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 panel.addEventListener('click', e => { if (e.target === panel) closePanel(); });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-open]'); if (t) openPanel(t.dataset.open);
+  const l = e.target.closest('[data-lang]');
+  if (l) { setLang(l.dataset.lang); return; }
+  const t = e.target.closest('[data-open]');
+  if (t) openPanel(t.dataset.open);
 });
 
-/* ---------- helpers ---------- */
-const toggleCls = (btns, fn) => btns.forEach(b => b.onclick = () => { btns.forEach(x => x.classList.remove('on')); b.classList.add('on'); fn(b); });
+applyLang();
 
-const PANELS = {
-/* ------------------------------------------------------------------ */
-'root-info': { color: '#2b3556', title: 'Temas 3 y 4 · Visión general', sub: 'Datos y <u>Information Systems</u>',
-  html: sec('En una frase', `<p>El <b>Tema 3</b> guarda los <u>Data</u>; el <b>Tema 4</b> explica las piezas del <u>Information System</u>.</p>`)
-   + sec('Los dos temas', pts([['Tema 3', 'Bases de datos: <u>Relational</u> (tablas + <u>SQL</u>) o <u>Non-Relational</u> (<u>NoSQL</u>).'], ['Tema 4', 'Cinco componentes: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> y <u>Processes</u>.']]))
-   + sec('Ir a un tema', `<button class="btn" data-open="t3">Tema 3 · Bases de datos</button><button class="btn" data-open="t4" style="--c:#b9532f;border-color:#b9532f">Tema 4 · Componentes</button>`) },
-
-/* ------------------------------------------------------------------ */
-'t3': { color: C.blue, title: 'Tema 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub: 'Bases de datos: dos formas de organizar la información',
-  html: sec('Dos formas de guardar', `<p>Misma información, distinto <u>Schema</u>. Cambia el modelo:</p>
-   <button class="btn on" data-m="r">Relational (tablas)</button><button class="btn" data-m="n">Non-Relational (documentos)</button>
-   <div class="lab-box" id="vs"></div><div class="fb" id="vsn"></div>`)
-   + sec('Ramas', `<button class="btn" data-open="rel">Modelo relacional ▶</button><button class="btn" data-open="nosql">Modelo no relacional ▶</button><button class="btn" data-open="cmp">Comparación ▶</button>`),
-  init(r) {
-    const vs = $('#vs', r), vsn = $('#vsn', r);
-    const draw = m => {
-      if (m === 'r') {
-        vs.innerHTML = `<table class="db"><tr><th>id</th><th>nombre</th><th>ciudad</th><th>hobbies</th><th>premium</th></tr>
-          <tr><td>1</td><td>Ana</td><td>Madrid</td><td class="null">NULL</td><td class="null">NULL</td></tr>
-          <tr><td>2</td><td>Luis</td><td class="null">NULL</td><td>fútbol, cine</td><td>true</td></tr></table>`;
-        vsn.innerHTML = '🧱 Todas las filas (<u>rows</u>) deben tener las mismas columnas: es un <u>Schema</u> fijo.';
-      } else {
-        vs.innerHTML = `<div class="row2"><div class="code" style="flex:1">{\n  "_id": 1,\n  "nombre": "Ana",\n  "ciudad": "Madrid"\n}</div><div class="code" style="flex:1">{\n  "_id": 2,\n  "nombre": "Luis",\n  "hobbies": ["fútbol","cine"],\n  "premium": true\n}</div></div>`;
-        vsn.innerHTML = '🧩 Cada <u>document</u> guarda solo lo que necesita: <u>Schema</u> flexible.';
-      }
-    };
-    draw('r');
-    toggleCls([...r.querySelectorAll('[data-m]')], b => draw(b.dataset.m));
-  } },
-
-/* ------------------------------------------------------------------ */
-'rel': { color: C.blue, title: 'Modelo relacional · <u>Relational Database</u>', sub: 'Tablas, llaves y <u>SQL</u>',
-  html: sec('¿Qué es?', `<p>Datos en <u>tables</u> con filas y columnas; las tablas se relacionan con llaves y se consultan con <u>SQL</u>.</p>`)
-   + sec('Conceptos clave', pts([['<u>Primary Key</u>', 'Identifica cada fila.'], ['<u>Foreign Key</u>', 'Enlaza con otra tabla.'], ['<u>Schema</u> fijo', 'Columnas y tipos definidos antes de guardar.'], ['<u>ACID</u>', 'Atomicity · Consistency · Isolation · Durability.']]))
-   + sec('Ejemplos', `<p>MySQL · PostgreSQL · Oracle Database · SQL Server.</p>`) },
-
-/* ------------------------------------------------------------------ */
-'nosql': { color: C.blue, title: 'Modelo no relacional · <u>NoSQL</u>', sub: '<u>Non-Relational Databases</u>: flexibles y escalables',
-  html: sec('¿Qué es?', `<p>No usa tablas fijas: cada registro guarda solo lo que necesita, con <u>Schema</u> flexible y <u>horizontal scaling</u>.</p>`)
-   + sec('Cuatro tipos', pts([['<u>Document</u>', 'JSON flexible · MongoDB.'], ['<u>Key-Value</u>', 'Clave → valor · Redis.'], ['<u>Column-family</u>', 'Columnas por fila · Cassandra.'], ['<u>Graph</u>', 'Nodos y relaciones · Neo4j.']]))
-   + sec('Cuándo usarla', `<p><u>Big Data</u>, tiempo real, redes sociales y datos que cambian mucho.</p>`) },
-
-/* ------------------------------------------------------------------ */
-'cmp': { color: C.blue, title: 'Comparación · ¿Cuál elegir?', sub: '<u>Relational</u> vs <u>Non-Relational</u>',
-  html: sec('Tabla comparativa', `<table class="compare"><tr><th></th><th><u>Relational</u> (<u>SQL</u>)</th><th><u>Non-Relational</u> (<u>NoSQL</u>)</th></tr>
-    <tr><td><u>Schema</u></td><td>Fijo, definido de antemano</td><td>Flexible, cambia fácil</td></tr>
-    <tr><td>Estructura</td><td><u>Tables</u>, filas y columnas</td><td><u>Documents</u>, <u>key-value</u>, <u>column</u>, <u>graph</u></td></tr>
-    <tr><td><u>Scalability</u></td><td>Vertical (servidor más potente)</td><td>Horizontal (más servidores)</td></tr>
-    <tr><td>Consistencia</td><td><u>ACID</u>: muy estricta</td><td><u>BASE</u>: eventual</td></tr>
-    <tr><td>Relaciones</td><td><u>JOIN</u> entre tablas</td><td>Datos anidados o enlaces</td></tr>
-    <tr><td>Ejemplos</td><td>MySQL, PostgreSQL, Oracle</td><td>MongoDB, Redis, Cassandra, Neo4j</td></tr></table>
-    <p style="margin-top:14px">💡 <b>Regla práctica:</b> <u>Relational</u> si necesitas exactitud y relaciones; <u>Non-Relational</u> si necesitas flexibilidad y escala. Muchas apps usan ambas.</p>`)
-   },
-
-/* ------------------------------------------------------------------ */
-'t4': { color: C.terra, title: 'Tema 4 · <u>Information Systems</u>', sub: 'Cinco componentes que trabajan juntos',
-  html: sec('¿Qué es?', `<p>Conjunto de componentes que <b>recolecta, guarda, procesa y distribuye</b> información para apoyar decisiones y operaciones.</p>`)
-   + sec('Cinco componentes', `<p>Toca uno para verlo:</p><div class="chips" id="comps"></div>`),
-  init(r) {
-    const C5 = [['hw', 'Hardware'], ['sw', 'Software'], ['data', 'Data'], ['people', 'People'], ['proc', 'Processes']];
-    $('#comps', r).innerHTML = C5.map(([id, n]) => `<span class="chipn chipimg" data-c="${id}" data-open="${id}">${CROPS[id] ? `<img src="${CROPS[id]}" alt="">` : ''}<u>${n}</u></span>`).join('');
-  } },
-
-/* ------------------------------------------------------------------ */
-'hw': { color: C.terra, title: '<u>Hardware</u>', sub: 'Las partes físicas del sistema',
-  html: sec('¿Qué es?', `<p>Todo lo <b>físico</b> del sistema: equipos, servidores, redes y periféricos.</p>`)
-   + sec('Cuatro etapas', pts([['<u>Input</u>', 'Teclado, mouse, micrófono, cámara.'], ['<u>Processing</u>', 'CPU, GPU, memoria RAM.'], ['<u>Output</u>', 'Monitor, impresora, bocinas.'], ['<u>Storage</u>', 'SSD/HDD, USB, nube.']])) },
-
-/* ------------------------------------------------------------------ */
-'sw': { color: C.terra, title: '<u>Software</u>', sub: 'Los programas que dan órdenes al hardware',
-  html: sec('¿Qué es?', `<p>Las instrucciones lógicas que le dicen al <u>Hardware</u> qué hacer.</p>`)
-   + sec('Dos familias', pts([['<u>System software</u>', 'Sistema operativo, drivers y utilidades.'], ['<u>Application software</u>', 'Apps de usuario: Excel, Chrome, WhatsApp.']]))
-   + sec('<u>Database</u> software', `<p>Un <u>DBMS</u> (MySQL, MongoDB) administra las bases de datos del Tema 3.</p>`) },
-
-/* ------------------------------------------------------------------ */
-'data': { color: C.terra, title: 'Datos · <u>Data</u>', sub: 'De hechos sueltos a conocimiento',
-  html: sec('Data → Information → Knowledge', `<p>Hechos sueltos → datos con contexto → conocimiento para decidir.</p>
-    <p><b>Ejemplo:</b> 37.0 · 38.5 · 40.1 → subió 3.1 °C → fiebre: avisar al médico.</p>`)
-   + sec('Tipos', pts([['<u>Structured</u>', 'En tablas: ventas, inventarios (<u>Relational</u>).'], ['<u>Unstructured</u>', 'Sin formato fijo: fotos, videos, correos (<u>Non-Relational</u>).']]))
-   + sec('¿Dónde se guardan?', `<p>En una <u>Database</u> del Tema 3.</p>`) },
-
-/* ------------------------------------------------------------------ */
-'people': { color: C.terra, title: 'Personas · <u>People</u>', sub: 'Quienes usan, construyen y administran el sistema',
-  html: sec('Roles principales', pts([['<u>End user</u>', 'Usa el sistema a diario.'], ['<u>Developer</u>', 'Programa y mantiene apps.'], ['<u>DBA</u>', 'Administra las bases de datos.'], ['<u>Systems Analyst</u>', 'Traduce necesidades a requisitos.'], ['<u>IT Manager</u>', 'Dirige equipo, presupuesto y estrategia.']])) },
-
-/* ------------------------------------------------------------------ */
-'proc': { color: C.terra, title: 'Procesos · <u>Processes</u>', sub: 'Los pasos que organizan el trabajo',
-  html: sec('¿Qué son?', `<p>Secuencia ordenada de pasos que convierte entradas en resultados: políticas, procedimientos y <u>workflows</u>.</p>`)
-   + sec('Ejemplo: compra en línea', `<p>1. Elegir producto → 2. Pagar → 3. Validar pago → 4. Preparar envío → 5. Entregar.</p>`) },
-};
 
 /* map click on hub for third-party keyboard use is handled by the delegated listener above */
 </script>
