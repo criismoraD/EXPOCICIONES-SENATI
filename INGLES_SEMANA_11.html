@@ -48,7 +48,6 @@
   #close:hover { background:#fff6e4; color:var(--c); }
   #body { overflow:auto; padding:10px 34px 40px; font-size:25px; line-height:1.42; flex:1; }
   #body h3 { font:700 34px Georgia,serif; color:var(--c); margin:30px 0 10px; }
-  #body h3 .tag { margin-left:14px; vertical-align:4px; font:700 17px "Trebuchet MS",sans-serif; letter-spacing:.14em; background:#e3a72f; color:#2a2622; padding:5px 11px; border-radius:20px; }
   #body p { margin:8px 0; }
   .pts { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin:12px 0; }
   .pt { background:#fff; border:3px solid var(--c); border-radius:16px; padding:12px 16px; font-size:24px; line-height:1.3; }
@@ -64,43 +63,16 @@
   table.db { border-collapse:collapse; font-size:22px; margin:6px 0 10px; background:#fff; }
   table.db th { background:var(--c); color:#fff6e4; padding:6px 12px; text-align:left; }
   table.db td { border:2px solid #d9cdb4; padding:5px 12px; }
-  table.db tr.hl td { background:#ffe69a; font-weight:700; }
-  table.db tr.hl2 td { background:#cfe8d3; }
   table.db td.null { color:#aaa; font-style:italic; background:#f1ece0; }
-  table.db tr.rw { cursor:pointer; }
-  table.db tr.rw:hover td { background:#fff2c6; }
-  .badge { font-size:14px; background:#e3a72f; color:#2a2622; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:2px; }
   .row2 { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
   .fb { min-height:36px; margin:8px 0; font-weight:700; }
   .ok { color:#2b7a3d; } .bad { color:#b3261e; }
-  .qcard { font:700 30px/1.25 Georgia,serif; background:#fff; border:3px solid var(--c); border-radius:16px; padding:16px 20px; margin:10px 0; }
-  .qn { font-size:21px; color:#6b6358; }
   .chips { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:10px 0; }
   .chipn { border:4px solid #bbb; border-radius:18px; padding:8px 18px; font-size:26px; font-weight:700; background:#fff; transition:all .25s; }
-  .chipn.on { background:#ffe69a; border-color:#e3a72f; transform:scale(1.1); }
-  .arrow { font-size:22px; color:#6b6358; text-align:center; }
-  .shake { animation:shake .35s; }
-  @keyframes shake { 0%,100% { transform:translateX(0);} 25% { transform:translateX(-8px);} 75% { transform:translateX(8px);} }
-  .flip { cursor:pointer; background:#fff; border:3px solid var(--c); border-radius:16px; padding:12px 16px; min-height:96px; transition:background .2s; }
-  .flip b { font:700 28px Georgia,serif; color:var(--c); display:block; }
-  .flip.open { background:#ffe69a; }
-  .flip .def { display:none; }
-  .flip.open .def { display:block; }
-  .flip .hint { color:#7a7164; font-size:21px; }
-  .flip.open .hint { display:none; }
-  .bal { font:700 34px Georgia,serif; background:#fff; border:3px solid var(--c); border-radius:16px; padding:12px 22px; min-width:220px; text-align:center; }
-  .bal small { display:block; font:400 21px "Trebuchet MS"; color:#6b6358; }
-  .log { font-family:Consolas,monospace; font-size:22px; background:#2b2a33; color:#f5e9c8; border-radius:12px; padding:10px 14px; min-height:150px; margin-top:10px; }
-  .log div.err { color:#ff8f86; } .log div.good { color:#9fe0a2; }
-  .gnode { border:4px solid var(--c); background:#fff; border-radius:50px; padding:8px 20px; font:700 26px Georgia,serif; transition:all .25s; }
-  .gnode.on { background:#ffe69a; border-color:#e3a72f; transform:scale(1.12); }
-  .gedge { font-size:20px; color:#6b6358; text-align:center; font-weight:700; }
-  .gedge.on { color:var(--acc); }
   .compare { width:100%; border-collapse:collapse; font-size:24px; background:#fff; }
   .compare th { background:var(--c); color:#fff6e4; padding:10px 14px; text-align:left; }
   .compare td { border:2px solid #d9cdb4; padding:9px 14px; }
   .compare td:first-child { font-weight:700; background:#f4ecd8; }
-  .link { background:none; border:0; font:inherit; font-weight:700; color:var(--c); text-decoration:underline; cursor:pointer; padding:0; }
   .chipimg { display:flex; align-items:center; gap:10px; cursor:pointer; }
   .chipimg img { height:62px; border-radius:10px; background:#f3ebda; }
 </style>
@@ -306,6 +278,54 @@ function iCycle(cx, cy, s, col) {
   glaze(ep(cx, cy, s*.09, s*.09, 12), C.blue, 220, 2, .5);
 }
 
+/* ----- decorative illustrations (non-interactive) ----- */
+function tableArt(x, y, w, h, hdr, tint, rows = 3, cols = 3) {
+  glaze(rp(x, y, w, h), tint, 140, 3, 2);
+  glaze(rp(x, y, w, h * .26), hdr, 200, 3, 1.5);
+  pl(rp(x, y, w, h), C.ink, .9, '2B', true);
+  const rh = h / (rows + 1);
+  for (let i = 1; i <= rows; i++) pl([[x, y + rh * i], [x + w, y + rh * i]], C.ink, .6);
+  for (let j = 1; j < cols; j++) pl([[x + w / cols * j, y], [x + w / cols * j, y + h]], C.ink, .6);
+}
+function artRel() {
+  tableArt(42, 160, 138, 104, C.blue, C.blueL, 3, 3);
+  tableArt(204, 188, 108, 80, C.terra, C.terraL, 2, 3);
+  brush.set('marker', C.ochre, 1.3); brush.noFill();
+  brush.spline([[132, 210], [166, 198], [190, 216], [206, 228], [224, 236]], .6);
+  [[132, 210], [224, 236]].forEach(([px, py]) => { glaze(ep(px, py, 7, 7, 12), C.ochre, 230, 2, .6); pl(ep(px, py, 7, 7, 12), C.ink, .6, '2B', true); });
+  glaze(ep(70, 276, 8, 8, 12), C.ochre, 230, 2, .6); pl(ep(70, 276, 8, 8, 12), C.ink, .7, '2B', true);
+  pl([[78, 276], [116, 276]], C.ink, 1); pl([[104, 276], [104, 284]], C.ink, .8); pl([[112, 276], [112, 283]], C.ink, .8);
+}
+function artDoc() {
+  glaze(rr(1132, 160, 100, 112, 8), C.blueL, 150, 3, 2); pl(rr(1132, 160, 100, 112, 8), C.ink, .9, '2B', true);
+  glaze(rp(1132, 160, 100, 22), C.blue, 190, 2, 1);
+  brace(1150, 226, 70, 1, C.ink);
+  [0, 1, 2, 3, 4].forEach(i => pl([[1166, 196 + i * 15], [1166 + 46 - (i % 3) * 8, 196 + i * 15]], i % 2 ? C.terra : C.ink, .7));
+  const N = [[1290, 182, 15], [1362, 206, 12], [1328, 250, 17], [1274, 242, 10], [1390, 262, 9]];
+  [[0,1],[1,2],[2,3],[0,3],[0,2],[2,4],[1,4]].forEach(([a, b]) => pl([[N[a][0], N[a][1]], [N[b][0], N[b][1]]], C.ink, .7));
+  N.forEach(([x, y, r], i) => { glaze(ep(x, y, r, r, 16), [C.blue, C.terraM, C.ochre, C.blueM, C.green][i], 190, 3, 1.5); pl(ep(x, y, r, r, 16), C.ink, .8, '2B', true); });
+}
+function artHw() {
+  glaze(rr(50, 612, 150, 92, 8), C.blueL, 200, 3, 1.5);
+  glaze(rr(58, 620, 134, 76, 4), C.blue, 130, 3, 1.5); glaze(rp(66, 630, 60, 6), C.ochre, 220, 2, 1);
+  [0, 1, 2].forEach(i => pl([[66, 646 + i*12], [66 + 90 - i*20, 646 + i*12]], C.cream, .7));
+  pl(rr(50, 612, 150, 92, 8), C.ink, 1, '2B', true);
+  pl([[112, 704], [106, 722]], C.ink, 1); pl([[138, 704], [144, 722]], C.ink, 1); pl([[90, 724], [160, 724]], C.ink, 1.1);
+  [0, 1, 2].forEach(i => {
+    const y = 618 + i * 32;
+    glaze(rr(226, y, 84, 26, 4), [C.terraL, C.terraM, C.terraL][i], 190, 3, 1); pl(rr(226, y, 84, 26, 4), C.ink, .9, '2B', true);
+    glaze(ep(240, y + 13, 4.5, 4.5, 10), [C.green, C.ochre, C.green][i], 240, 2, .3);
+    pl([[256, y + 13], [296, y + 13]], C.ink, .6);
+  });
+}
+function artPeople() {
+  iPerson(1170, 676, 150, C.terra, C.terraL); iPerson(1245, 680, 130, C.blue, C.blueL); iPerson(1210, 690, 110, C.green, '#dbe7d6');
+  const gx = 1340, gy = 668;
+  for (let i = 0; i < 10; i++) { const a = i * 36; pl([[gx + 38*cos(a), gy + 38*sin(a)], [gx + 52*cos(a), gy + 52*sin(a)]], C.ink, 2.2); }
+  glaze(ep(gx, gy, 42, 42, 24), C.ochre, 190, 3, 1.5); pl(ep(gx, gy, 42, 42, 24), C.ink, 1, '2B', true);
+  glaze(ep(gx, gy, 15, 15, 14), C.paper, 255, 2, .5); pl(ep(gx, gy, 15, 15, 14), C.ink, .8, '2B', true);
+}
+
 /* ----- passes ----- */
 const ICONS = { rel: iCyl, nosql: iNoSql, cmp: iScale, hw: iChip, sw: iWindow, data: iBars, people: iPeople, proc: iCycle };
 let paperShader;
@@ -402,6 +422,14 @@ const PASSES = [
     for (const id of ['hw', 'sw', 'data', 'people', 'proc']) { const n = NB[id], [cx, cy] = icCenter(n); ICONS[id](cx, cy, icSize(n), C.terra, C.terraL); }
     brush.noField();
   },
+  function decor() {
+    brush.field('hand');
+    push(); translate(-12, 170); artRel(); pop();
+    push(); translate(8, 170); artDoc(); pop();
+    push(); translate(-20, -154); artHw(); pop();
+    push(); translate(1135, 452); scale(.87); translate(-1100, -600); artPeople(); pop();
+    brush.noField();
+  },
   function paper() {
     paperShader.setUniform('seed', 7.0); paperShader.setUniform('tooth', 0.65); paperShader.setUniform('granulation', 0.55);
     filter(paperShader);
@@ -463,57 +491,22 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-open]'); if (t) openPanel(t.dataset.open);
 });
 
-/* ---------- reusable widgets ---------- */
-function quiz(root, items, options, intro) {
-  let i = 0, score = 0, done = false;
-  root.innerHTML = `<div class="lab-box"><div style="font-weight:700;margin-bottom:4px">${intro}</div>
-    <div class="qn"></div><div class="qcard"></div><div class="qo"></div><div class="fb"></div>
-    <button class="btn nx" style="display:none">Siguiente ▶</button></div>`;
-  const qn = $('.qn', root), qc = $('.qcard', root), qo = $('.qo', root), fb = $('.fb', root), nx = $('.nx', root);
-  function show() {
-    done = false; nx.style.display = 'none'; fb.innerHTML = '';
-    if (i >= items.length) {
-      qn.textContent = ''; qc.innerHTML = `🎉 Resultado: ${score} de ${items.length}`;
-      qo.innerHTML = `<button class="btn rs">↻ Intentar de nuevo</button>`;
-      $('.rs', root).onclick = () => { i = 0; score = 0; show(); }; return;
-    }
-    qn.textContent = `Pregunta ${i + 1} de ${items.length} · Aciertos: ${score}`;
-    qc.innerHTML = items[i].t;
-    qo.innerHTML = options.map((o, k) => `<button class="btn" data-k="${k}">${o}</button>`).join('');
-    qo.querySelectorAll('.btn').forEach(b => b.onclick = () => {
-      if (done) return; done = true;
-      const k = +b.dataset.k, right = k === items[i].a;
-      if (right) score++;
-      b.classList.add('on');
-      fb.innerHTML = right ? `<span class="ok">✔ ¡Correcto!</span> ${items[i].why}` : `<span class="bad">✘ Casi.</span> Era: <b>${options[items[i].a]}</b>. ${items[i].why}`;
-      if (!right) b.classList.add('shake');
-      nx.style.display = 'inline-block'; nx.textContent = i === items.length - 1 ? 'Ver resultado ▶' : 'Siguiente ▶';
-    });
-  }
-  nx.onclick = () => { i++; show(); };
-  show();
-}
+/* ---------- helpers ---------- */
 const toggleCls = (btns, fn) => btns.forEach(b => b.onclick = () => { btns.forEach(x => x.classList.remove('on')); b.classList.add('on'); fn(b); });
-
-/* ---------- data for the SQL lab ---------- */
-const CL = [[1, 'Ana', 'Madrid'], [2, 'Luis', 'Lima'], [3, 'Marta', 'Madrid'], [4, 'Pablo', 'Bogotá']];
-const PE = [[101, 1, 'Laptop', 900], [102, 2, 'Mouse', 25], [103, 1, 'Teclado', 60], [104, 3, 'Monitor', 300], [105, 4, 'Mouse', 25]];
-const tbl = (head, rows, cls = '', attr = () => '') => `<table class="db ${cls}"><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${rows.map(r => `<tr ${attr(r)}>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
 
 const PANELS = {
 /* ------------------------------------------------------------------ */
 'root-info': { color: '#2b3556', title: 'Temas 3 y 4 · Visión general', sub: 'Datos y <u>Information Systems</u>',
-  html: sec('Cómo se conectan los dos temas', `<p>Todo <u>Information System</u> necesita guardar <u>Data</u>. El <b>Tema 3</b> explica <i>cómo</i> se guardan esos datos (<u>Relational</u> o <u>Non-Relational</u>) y el <b>Tema 4</b> explica <i>qué piezas</i> forman el sistema completo.</p>
-   ${pts([['Tema 3', 'Bases de datos: tablas con <u>SQL</u> o modelos flexibles con <u>NoSQL</u>.'], ['Tema 4', 'Cinco componentes: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> y <u>Processes</u>.']])}
-   <p>La <u>Database</u> es justo el punto donde ambos temas se tocan: es la parte del sistema donde viven los <u>Data</u>.</p>`)
-   + sec('Ve a un tema', `<button class="btn" data-open="t3">Tema 3 · Bases de datos</button><button class="btn" data-open="t4" style="--c:#b9532f;border-color:#b9532f">Tema 4 · Componentes</button>`) },
+  html: sec('En una frase', `<p>El <b>Tema 3</b> guarda los <u>Data</u>; el <b>Tema 4</b> explica las piezas del <u>Information System</u>.</p>`)
+   + sec('Los dos temas', pts([['Tema 3', 'Bases de datos: <u>Relational</u> (tablas + <u>SQL</u>) o <u>Non-Relational</u> (<u>NoSQL</u>).'], ['Tema 4', 'Cinco componentes: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> y <u>Processes</u>.']]))
+   + sec('Ir a un tema', `<button class="btn" data-open="t3">Tema 3 · Bases de datos</button><button class="btn" data-open="t4" style="--c:#b9532f;border-color:#b9532f">Tema 4 · Componentes</button>`) },
 
 /* ------------------------------------------------------------------ */
 't3': { color: C.blue, title: 'Tema 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub: 'Bases de datos: dos formas de organizar la información',
-  html: sec('La misma información, dos mundos', `<p>Elige un modelo y mira cómo se guarda <b>Ana</b> y <b>Luis</b>. Fíjate en las celdas vacías (<code>NULL</code>) del modelo relacional:</p>
+  html: sec('Dos formas de guardar', `<p>Misma información, distinto <u>Schema</u>. Cambia el modelo:</p>
    <button class="btn on" data-m="r">Relational (tablas)</button><button class="btn" data-m="n">Non-Relational (documentos)</button>
    <div class="lab-box" id="vs"></div><div class="fb" id="vsn"></div>`)
-   + sec('Explora cada rama', `<button class="btn" data-open="rel">Modelo relacional ▶</button><button class="btn" data-open="nosql">Modelo no relacional ▶</button><button class="btn" data-open="cmp">Comparación y quiz ▶</button>`),
+   + sec('Ramas', `<button class="btn" data-open="rel">Modelo relacional ▶</button><button class="btn" data-open="nosql">Modelo no relacional ▶</button><button class="btn" data-open="cmp">Comparación ▶</button>`),
   init(r) {
     const vs = $('#vs', r), vsn = $('#vsn', r);
     const draw = m => {
@@ -533,111 +526,15 @@ const PANELS = {
 
 /* ------------------------------------------------------------------ */
 'rel': { color: C.blue, title: 'Modelo relacional · <u>Relational Database</u>', sub: 'Tablas, llaves y <u>SQL</u>',
-  html: sec('¿Qué es?', `<p>Una <u>Relational Database</u> organiza los datos en <u>tables</u> formadas por filas (<u>rows</u>) y columnas (<u>columns</u>). Las tablas se relacionan mediante llaves y se consultan con <u>SQL</u>.</p>
-    ${pts([['<u>Primary Key</u>', 'Identifica de forma única cada fila (ej. <code>id</code>).'], ['<u>Foreign Key</u>', 'Apunta a la llave primaria de otra tabla y crea la relación.'], ['<u>Schema</u> fijo', 'Se definen columnas y tipos antes de guardar datos.'], ['<u>JOIN</u>', 'Une tablas relacionadas en una sola consulta.']])}
-    <p><b>Ejemplos:</b> MySQL, PostgreSQL, Oracle Database, SQL Server.</p>`)
-  + sec('Laboratorio <u>SQL</u>', `<p>Pasa el cursor sobre un pedido para ver a qué cliente apunta su <u>Foreign Key</u>. Luego ejecuta una consulta:</p>
-    <div class="row2"><div><b>Clientes</b> <span class="badge">PK = id</span><div id="tc"></div></div><div><b>Pedidos</b> <span class="badge">FK = cliente_id</span><div id="tp"></div></div></div>
-    <div id="qb"></div><div class="code" id="sqlt">-- elige una consulta ▲</div><div id="res"></div>`, 'INTERACTIVO')
-  + sec('Transacciones <u>ACID</u>', `<p>Toca cada tarjeta y luego prueba una transferencia bancaria de $100 de Ana a Luis:</p>
-    <div class="pts" id="acid"></div>
-    <div class="row2"><div class="bal" id="bA"><small>Ana</small>$<span>500</span></div><div style="font-size:42px;align-self:center">→</div><div class="bal" id="bL"><small>Luis</small>$<span>200</span></div></div>
-    <p><button class="btn" id="tOk">✔ Transferir (COMMIT)</button><button class="btn" id="tBad">⚡ Transferir con fallo (ROLLBACK)</button></p>
-    <div class="log" id="tlog">Esperando transacción…</div>`, 'INTERACTIVO'),
-  init(r) {
-    const tc = $('#tc', r), tp = $('#tp', r), res = $('#res', r), sqlt = $('#sqlt', r);
-    const drawT = (hlC = [], hlP = [], hover = null) => {
-      tc.innerHTML = tbl(['id', 'nombre', 'ciudad'], CL, '', row => `data-id="${row[0]}" class="${hlC.includes(row[0]) ? 'hl' : hover === row[0] ? 'hl2' : ''}"`);
-      tp.innerHTML = tbl(['id', 'cliente_id', 'producto', 'total'], PE, '', row => `data-id="${row[0]}" data-c="${row[1]}" class="rw ${hlP.includes(row[0]) ? 'hl' : ''}"`);
-      tp.querySelectorAll('tr.rw').forEach(tr => {
-        tr.onmouseenter = () => { tc.querySelectorAll('tr[data-id]').forEach(t => t.classList.toggle('hl2', t.dataset.id === tr.dataset.c)); };
-        tr.onmouseleave = () => tc.querySelectorAll('tr[data-id]').forEach(t => t.classList.remove('hl2'));
-      });
-    };
-    drawT();
-    const joined = PE.map(p => { const c = CL.find(c => c[0] === p[1]); return [c[1], p[2], '$' + p[3]]; });
-    const sums = CL.map(c => [c[1], '$' + PE.filter(p => p[1] === c[0]).reduce((a, p) => a + p[3], 0)]);
-    const Q = [
-      { b: 'WHERE ciudad', sql: `<span class="k">SELECT</span> * <span class="k">FROM</span> Clientes\n<span class="k">WHERE</span> ciudad = <span class="s">'Madrid'</span>;`, hc: [1, 3], hp: [], out: () => tbl(['id', 'nombre', 'ciudad'], CL.filter(c => c[2] === 'Madrid')) },
-      { b: 'WHERE total', sql: `<span class="k">SELECT</span> * <span class="k">FROM</span> Pedidos\n<span class="k">WHERE</span> total > 100;`, hc: [], hp: [101, 104], out: () => tbl(['id', 'cliente_id', 'producto', 'total'], PE.filter(p => p[3] > 100)) },
-      { b: 'JOIN', sql: `<span class="k">SELECT</span> nombre, producto, total\n<span class="k">FROM</span> Clientes <span class="k">JOIN</span> Pedidos\n  <span class="k">ON</span> Clientes.id = Pedidos.cliente_id;`, hc: [1, 2, 3, 4], hp: [101, 102, 103, 104, 105], out: () => tbl(['nombre', 'producto', 'total'], joined) },
-      { b: 'GROUP BY', sql: `<span class="k">SELECT</span> nombre, <span class="k">SUM</span>(total) <span class="k">AS</span> gasto\n<span class="k">FROM</span> Clientes <span class="k">JOIN</span> Pedidos <span class="k">ON</span> Clientes.id = Pedidos.cliente_id\n<span class="k">GROUP BY</span> nombre;`, hc: [1, 2, 3, 4], hp: [101, 102, 103, 104, 105], out: () => tbl(['nombre', 'gasto'], sums) },
-    ];
-    $('#qb', r).innerHTML = Q.map((q, i) => `<button class="btn" data-i="${i}">▶ ${q.b}</button>`).join('');
-    toggleCls([...r.querySelectorAll('#qb .btn')], b => {
-      const q = Q[+b.dataset.i]; drawT(q.hc, q.hp); sqlt.innerHTML = q.sql; res.innerHTML = `<b>Resultado:</b>` + q.out();
-    });
-    // flip cards
-    const A = [['A · <u>Atomicity</u>', 'Atomicidad', 'Todo o nada: la transacción se completa entera o no ocurre.'], ['C · <u>Consistency</u>', 'Consistencia', 'Los datos siempre cumplen las reglas definidas.'], ['I · <u>Isolation</u>', 'Aislamiento', 'Transacciones simultáneas no se estorban entre sí.'], ['D · <u>Durability</u>', 'Durabilidad', 'Lo confirmado (<u>commit</u>) no se pierde, aunque falle la luz.']];
-    const ac = $('#acid', r);
-    ac.innerHTML = A.map(a => `<div class="flip"><b>${a[0]}</b><span class="hint">Toca para ver ▸</span><span class="def"><i>${a[1]}</i>: ${a[2]}</span></div>`).join('');
-    ac.querySelectorAll('.flip').forEach(f => f.onclick = () => f.classList.toggle('open'));
-    // transfer
-    let ana = 500, luis = 200, busy = false;
-    const log = $('#tlog', r), bA = $('#bA span', r), bL = $('#bL span', r);
-    const upd = () => { bA.textContent = ana; bL.textContent = luis; };
-    function run(fail) {
-      if (busy) return; busy = true; log.innerHTML = '';
-      const add = (t, c = '') => log.insertAdjacentHTML('beforeend', `<div class="${c}">${t}</div>`);
-      const steps = [
-        () => add('BEGIN;'), () => { ana -= 100; upd(); add('UPDATE cuentas SET saldo = saldo - 100 WHERE nombre = \'Ana\';'); },
-        () => fail ? (add('⚡ ¡Falla de energía a mitad de la transacción!', 'err')) : (luis += 100, upd(), add('UPDATE cuentas SET saldo = saldo + 100 WHERE nombre = \'Luis\';')),
-        () => fail ? (ana += 100, upd(), add('ROLLBACK;  ← se deshace el cambio', 'err')) : add('COMMIT;', 'good'),
-        () => { add(fail ? '✔ <u>Atomicity</u>: el dinero NO desapareció. Ana vuelve a $500.' : '✔ Transacción confirmada: Ana $400 · Luis $300.', 'good'); busy = false; if (fail) { ana = 500; luis = 200; upd(); } },
-      ];
-      steps.forEach((s, k) => setTimeout(s, 600 * (k + 1)));
-    }
-    $('#tOk', r).onclick = () => { ana = 500; luis = 200; upd(); run(false); };
-    $('#tBad', r).onclick = () => { ana = 500; luis = 200; upd(); run(true); };
-  } },
+  html: sec('¿Qué es?', `<p>Datos en <u>tables</u> con filas y columnas; las tablas se relacionan con llaves y se consultan con <u>SQL</u>.</p>`)
+   + sec('Conceptos clave', pts([['<u>Primary Key</u>', 'Identifica cada fila.'], ['<u>Foreign Key</u>', 'Enlaza con otra tabla.'], ['<u>Schema</u> fijo', 'Columnas y tipos definidos antes de guardar.'], ['<u>ACID</u>', 'Atomicity · Consistency · Isolation · Durability.']]))
+   + sec('Ejemplos', `<p>MySQL · PostgreSQL · Oracle Database · SQL Server.</p>`) },
 
 /* ------------------------------------------------------------------ */
 'nosql': { color: C.blue, title: 'Modelo no relacional · <u>NoSQL</u>', sub: '<u>Non-Relational Databases</u>: flexibles y escalables',
-  html: sec('¿Qué es?', `<p>Una <u>Non-Relational Database</u> (<u>NoSQL</u>) no obliga a usar tablas. Guarda los datos en el formato que mejor encaja con la aplicación, con un <u>Schema</u> flexible y pensada para crecer con <u>horizontal scaling</u> (agregar más servidores).</p>
-    ${pts([['<u>Schema</u> flexible', 'Cada registro puede tener campos distintos.'], ['<u>Horizontal scaling</u>', 'Se reparte la carga en muchos servidores.'], ['<u>BASE</u>', '<u>Basically Available</u>, <u>Soft state</u>, <u>Eventual consistency</u>.'], ['Volumen y velocidad', 'Ideal para <u>Big Data</u>, tiempo real y redes sociales.']])}`)
-  + sec('Los 4 tipos, con la misma persona: Ana', `<div id="tabs"><button class="btn on" data-t="doc"><u>Document</u></button><button class="btn" data-t="kv"><u>Key-Value</u></button><button class="btn" data-t="col"><u>Column-family</u></button><button class="btn" data-t="graph"><u>Graph</u></button></div>
-    <div class="lab-box" id="tab"></div>`, 'INTERACTIVO'),
-  init(r) {
-    const tab = $('#tab', r);
-    let extra = 0;
-    const EXTRAS = [['"telefono"', '"+34 600 123 456"'], ['"hobbies"', '["ajedrez","senderismo"]'], ['"direccion"', '{ "calle": "Gran Vía 1", "cp": 28013 }'], ['"premium"', 'true']];
-    const T = {
-      doc() {
-        const ana = ['"_id": 1', '"nombre": "Ana"', '"ciudad": "Madrid"', ...EXTRAS.slice(0, extra).map(e => e.join(': '))];
-        tab.innerHTML = `<p><b>MongoDB</b> · guarda <u>documents</u> tipo JSON. Agrega un campo nuevo <i>sin modificar ninguna tabla</i>:</p>
-          <div class="code">{\n  ${ana.join(',\n  ')}\n}</div>
-          <button class="btn" id="add" ${extra >= EXTRAS.length ? 'disabled' : ''}>＋ Agregar campo a Ana</button><button class="btn" id="rst">↻ Reiniciar</button>
-          <div class="fb ok">${extra ? '✔ ¡Listo! Luis y los demás <u>documents</u> no cambiaron: el <u>Schema</u> es flexible.' : ''}</div>`;
-        $('#add', tab).onclick = () => { extra++; T.doc(); }; $('#rst', tab).onclick = () => { extra = 0; T.doc(); };
-      },
-      kv() {
-        const K = [['user:1:name', '"Ana"'], ['user:1:session', '"tok_8f3a9c…"'], ['cart:1', '["Laptop","Mouse"]'], ['visits:home', '15432']];
-        tab.innerHTML = `<p><b>Redis</b> · un gran diccionario: <u>key</u> → <u>value</u>. Toca una llave:</p><div>${K.map((k, i) => `<button class="btn" data-i="${i}">${k[0]}</button>`).join('')}</div>
-          <div class="code" id="kvo">GET …</div><div class="fb">Solo se busca por <u>key</u>: respuesta en microsegundos, ideal para <u>cache</u> y sesiones.</div>`;
-        toggleCls([...tab.querySelectorAll('[data-i]')], b => { const k = K[+b.dataset.i]; $('#kvo', tab).innerHTML = `<span class="k">GET</span> ${k[0]}\n→ <span class="s">${k[1]}</span>   ⚡ 0.2 ms`; });
-      },
-      col() {
-        const R = [['ana', [['nombre', 'Ana'], ['ciudad', 'Madrid'], ['login:23-oct', '08:01'], ['login:24-oct', '09:15']]], ['luis', [['nombre', 'Luis'], ['login:24-oct', '22:40']]]];
-        tab.innerHTML = `<p><b>Cassandra</b> · datos agrupados en <u>column families</u>; cada <u>row key</u> puede tener columnas distintas. Toca una fila:</p>
-          <table class="db"><tr><th>row key</th><th colspan="4">columns (nombre: valor)</th></tr>${R.map((r, i) => `<tr class="rw" data-i="${i}"><td><b>${r[0]}</b></td>${r[1].map(c => `<td>${c[0]}: <b>${c[1]}</b></td>`).join('')}${'<td class="null"></td>'.repeat(4 - r[1].length)}</tr>`).join('')}</table>
-          <div class="fb" id="cfo">Ideal para millones de escrituras: logs, sensores <u>IoT</u>, historiales.</div>`;
-        tab.querySelectorAll('tr.rw').forEach(tr => tr.onclick = () => { tab.querySelectorAll('tr.rw').forEach(t => t.classList.remove('hl')); tr.classList.add('hl'); $('#cfo', tab).innerHTML = `<span class="k">SELECT * FROM users WHERE key = '${R[+tr.dataset.i][0]}'</span> → se lee <b>una sola fila</b>, sin <u>JOIN</u>.`; });
-      },
-      graph() {
-        tab.innerHTML = `<p><b>Neo4j</b> · nodos (<u>nodes</u>) y relaciones (<u>edges</u>). Ideal para redes sociales y recomendaciones.</p>
-          <div class="chips" id="gr"><span class="gnode" data-n="a">Ana</span><span class="gedge" data-e="1">—FRIEND→</span><span class="gnode" data-n="l">Luis</span><span class="gedge" data-e="2">—FRIEND→</span><span class="gnode" data-n="m">Marta</span><span class="gedge" data-e="3">—LIKES→</span><span class="gnode" data-n="j">Jazz</span></div>
-          <button class="btn" data-q="1">¿Amigos de amigos de Ana?</button><button class="btn" data-q="2">¿Qué música le gusta al círculo de Luis?</button>
-          <div class="code" id="gq">MATCH … RETURN …</div>`;
-        const set = (ns, es) => { tab.querySelectorAll('[data-n]').forEach(x => x.classList.toggle('on', ns.includes(x.dataset.n))); tab.querySelectorAll('[data-e]').forEach(x => x.classList.toggle('on', es.includes(+x.dataset.e))); };
-        toggleCls([...tab.querySelectorAll('[data-q]')], b => {
-          if (b.dataset.q === '1') { set(['a', 'l', 'm'], [1, 2]); $('#gq', tab).innerHTML = `<span class="k">MATCH</span> (a:Person {name:'Ana'})-[:FRIEND*2]->(x)\n<span class="k">RETURN</span> x;   → <span class="s">Marta</span>`; }
-          else { set(['l', 'm', 'j'], [2, 3]); $('#gq', tab).innerHTML = `<span class="k">MATCH</span> (:Person {name:'Luis'})-[:FRIEND]->(f)-[:LIKES]->(g)\n<span class="k">RETURN</span> g;   → <span class="s">Jazz</span>`; }
-        });
-      },
-    };
-    T.doc();
-    toggleCls([...r.querySelectorAll('#tabs .btn')], b => T[b.dataset.t]());
-  } },
+  html: sec('¿Qué es?', `<p>No usa tablas fijas: cada registro guarda solo lo que necesita, con <u>Schema</u> flexible y <u>horizontal scaling</u>.</p>`)
+   + sec('Cuatro tipos', pts([['<u>Document</u>', 'JSON flexible · MongoDB.'], ['<u>Key-Value</u>', 'Clave → valor · Redis.'], ['<u>Column-family</u>', 'Columnas por fila · Cassandra.'], ['<u>Graph</u>', 'Nodos y relaciones · Neo4j.']]))
+   + sec('Cuándo usarla', `<p><u>Big Data</u>, tiempo real, redes sociales y datos que cambian mucho.</p>`) },
 
 /* ------------------------------------------------------------------ */
 'cmp': { color: C.blue, title: 'Comparación · ¿Cuál elegir?', sub: '<u>Relational</u> vs <u>Non-Relational</u>',
@@ -648,122 +545,44 @@ const PANELS = {
     <tr><td>Consistencia</td><td><u>ACID</u>: muy estricta</td><td><u>BASE</u>: eventual</td></tr>
     <tr><td>Relaciones</td><td><u>JOIN</u> entre tablas</td><td>Datos anidados o enlaces</td></tr>
     <tr><td>Ejemplos</td><td>MySQL, PostgreSQL, Oracle</td><td>MongoDB, Redis, Cassandra, Neo4j</td></tr></table>
-    <p style="margin-top:14px">💡 <b>Regla práctica:</b> si necesitas <b>exactitud y relaciones</b>, usa <u>Relational</u>; si necesitas <b>flexibilidad y escala masiva</b>, usa <u>Non-Relational</u>. Muchas empresas usan ambas (<u>polyglot persistence</u>).</p>`)
-  + sec('Quiz: ¿qué base de datos usarías?', `<div id="qz"></div>`, 'INTERACTIVO'),
-  init(r) {
-    quiz($('#qz', r), [
-      { t: 'Sistema bancario de transferencias entre cuentas', a: 0, why: 'Necesita transacciones <u>ACID</u> y consistencia estricta.' },
-      { t: 'Red social con millones de usuarios y relaciones de amistad', a: 1, why: 'Una base tipo <u>Graph</u> recorre relaciones muy rápido y escala horizontalmente.' },
-      { t: 'Catálogo de productos donde cada producto tiene atributos distintos', a: 1, why: 'Un <u>Document</u> store permite un <u>Schema</u> flexible.' },
-      { t: 'Nómina: empleados, departamentos y puestos ligados entre sí', a: 0, why: 'Datos estructurados con <u>Foreign Keys</u> y <u>JOIN</u>.' },
-      { t: 'Caché de sesiones que debe responder en milisegundos', a: 1, why: 'Una <u>Key-Value</u> store como Redis es la más veloz.' },
-      { t: 'Inventario con reportes frecuentes que cruzan varias tablas', a: 0, why: '<u>SQL</u> y los <u>JOIN</u> están hechos para eso.' },
-    ], ['<u>Relational</u>', '<u>Non-Relational</u>'], 'Elige el modelo más adecuado para cada caso:');
-  } },
+    <p style="margin-top:14px">💡 <b>Regla práctica:</b> <u>Relational</u> si necesitas exactitud y relaciones; <u>Non-Relational</u> si necesitas flexibilidad y escala. Muchas apps usan ambas.</p>`)
+   },
 
 /* ------------------------------------------------------------------ */
 't4': { color: C.terra, title: 'Tema 4 · <u>Information Systems</u>', sub: 'Cinco componentes que trabajan juntos',
-  html: sec('¿Qué es un <u>Information System</u>?', `<p>Es un conjunto de componentes que <b>recolecta, guarda, procesa y distribuye información</b> para apoyar decisiones y operaciones. Toca un componente para entrarle:</p>
-    <div class="chips" id="comps"></div>`)
-  + sec('Simulación: pedir un café desde el celular', `<p>Avanza paso a paso y mira qué componentes participan:</p>
-    <button class="btn" id="stp">Siguiente paso ▶</button><button class="btn" id="rst">↻ Reiniciar</button>
-    <div class="lab-box"><div class="qcard" id="sim">Pulsa «Siguiente paso» para empezar.</div></div>`, 'INTERACTIVO'),
+  html: sec('¿Qué es?', `<p>Conjunto de componentes que <b>recolecta, guarda, procesa y distribuye</b> información para apoyar decisiones y operaciones.</p>`)
+   + sec('Cinco componentes', `<p>Toca uno para verlo:</p><div class="chips" id="comps"></div>`),
   init(r) {
     const C5 = [['hw', 'Hardware'], ['sw', 'Software'], ['data', 'Data'], ['people', 'People'], ['proc', 'Processes']];
     $('#comps', r).innerHTML = C5.map(([id, n]) => `<span class="chipn chipimg" data-c="${id}" data-open="${id}">${CROPS[id] ? `<img src="${CROPS[id]}" alt="">` : ''}<u>${n}</u></span>`).join('');
-    const S = [
-      ['📱 Ana toma su celular (<u>Hardware</u>) y abre la app.', ['hw', 'people']],
-      ['🧩 La app (<u>Software</u>) muestra el menú y envía el pedido por internet.', ['sw']],
-      ['🗄️ El pedido (cliente, producto, hora, precio) se guarda como <u>Data</u> en la <u>Database</u>.', ['data']],
-      ['🔁 Se sigue el proceso (<u>Process</u>): validar pago → preparar → entregar.', ['proc']],
-      ['☕ El barista (<u>People</u>) ve la orden en una pantalla y prepara el café. ¡Los 5 componentes funcionaron juntos!', ['hw', 'sw', 'data', 'people', 'proc']],
-    ];
-    let k = -1; const sim = $('#sim', r);
-    const paint = () => { r.querySelectorAll('[data-c]').forEach(c => c.classList.toggle('on', k >= 0 && S[k][1].includes(c.dataset.c))); };
-    $('#stp', r).onclick = () => { k = (k + 1) % S.length; sim.innerHTML = `<div class="qn">Paso ${k + 1} de ${S.length}</div>${S[k][0]}`; paint(); };
-    $('#rst', r).onclick = () => { k = -1; sim.textContent = 'Pulsa «Siguiente paso» para empezar.'; paint(); };
   } },
 
 /* ------------------------------------------------------------------ */
 'hw': { color: C.terra, title: '<u>Hardware</u>', sub: 'Las partes físicas del sistema',
-  html: sec('¿Qué es?', `<p>El <u>Hardware</u> es todo lo <b>físico</b> que puedes tocar: computadoras, servidores, celulares, impresoras y dispositivos de red. Toca cada etapa del flujo:</p>
-    <div class="chips" id="flow"><span class="chipn" data-h="in"><u>Input</u></span><span class="arrow">➜</span><span class="chipn" data-h="pr"><u>Processing</u></span><span class="arrow">➜</span><span class="chipn" data-h="out"><u>Output</u></span><span class="arrow">⬍</span><span class="chipn" data-h="st"><u>Storage</u></span></div>
-    <div class="fb" id="hwf">Toca una etapa ▲</div>`)
-  + sec('Juego: clasifica el dispositivo', `<div id="qz"></div>`, 'INTERACTIVO'),
-  init(r) {
-    const X = { in: ['Entrada: captura datos del mundo.', 'Teclado, mouse, micrófono, escáner, cámara'], pr: ['Procesamiento: ejecuta las instrucciones.', 'CPU, GPU, memoria RAM'], out: ['Salida: muestra los resultados.', 'Monitor, impresora, bocinas'], st: ['Almacenamiento: guarda los datos de forma permanente.', 'Disco SSD/HDD, memoria USB, nube (<u>Cloud</u>)'] };
-    toggleCls([...r.querySelectorAll('[data-h]')], b => { const x = X[b.dataset.h]; $('#hwf', r).innerHTML = `<b>${x[0]}</b><br>Ejemplos: ${x[1]}`; });
-    quiz($('#qz', r), [
-      { t: '⌨️ Teclado', a: 0, why: 'Introduce datos al sistema.' }, { t: '🖥️ Monitor', a: 2, why: 'Muestra resultados al usuario.' },
-      { t: '🧠 CPU', a: 1, why: 'Ejecuta las instrucciones.' }, { t: '💾 Disco SSD', a: 3, why: 'Guarda datos de forma permanente.' },
-      { t: '🎤 Micrófono', a: 0, why: 'Captura sonido como datos de entrada.' }, { t: '🖨️ Impresora', a: 2, why: 'Saca información al papel.' },
-      { t: '🔌 Memoria USB', a: 3, why: 'Es un dispositivo de almacenamiento portátil.' }, { t: '🎮 GPU', a: 1, why: 'Procesa gráficos y cálculos en paralelo.' },
-    ], ['<u>Input</u>', '<u>Processing</u>', '<u>Output</u>', '<u>Storage</u>'], '¿A qué categoría pertenece?');
-  } },
+  html: sec('¿Qué es?', `<p>Todo lo <b>físico</b> del sistema: equipos, servidores, redes y periféricos.</p>`)
+   + sec('Cuatro etapas', pts([['<u>Input</u>', 'Teclado, mouse, micrófono, cámara.'], ['<u>Processing</u>', 'CPU, GPU, memoria RAM.'], ['<u>Output</u>', 'Monitor, impresora, bocinas.'], ['<u>Storage</u>', 'SSD/HDD, USB, nube.']])) },
 
 /* ------------------------------------------------------------------ */
 'sw': { color: C.terra, title: '<u>Software</u>', sub: 'Los programas que dan órdenes al hardware',
-  html: sec('Dos grandes familias', `<p>El <u>Software</u> son las instrucciones lógicas que le dicen al <u>Hardware</u> qué hacer. No se toca, pero se usa todo el tiempo.</p>
-    ${pts([['<u>System software</u>', 'Hace funcionar la computadora: <u>Operating System</u> (Windows, Linux, macOS), <u>drivers</u> y utilerías.'], ['<u>Application software</u>', 'Resuelve tareas del usuario: Excel, un navegador, WhatsApp, un sistema de ventas.']])}
-    <p>Un <u>DBMS</u> (<u>Database Management System</u>), como MySQL o MongoDB, es software que administra las bases de datos del Tema 3. <button class="link" data-open="rel">Ver bases relacionales ▶</button></p>`)
-  + sec('Juego: ¿sistema o aplicación?', `<div id="qz"></div>`, 'INTERACTIVO'),
-  init(r) {
-    quiz($('#qz', r), [
-      { t: '🪟 Windows', a: 0, why: 'Es un <u>Operating System</u>.' }, { t: '📊 Excel', a: 1, why: 'Sirve para una tarea del usuario: hojas de cálculo.' },
-      { t: '🐧 Linux', a: 0, why: 'Es un <u>Operating System</u> de código abierto (<u>Open Source</u>).' }, { t: '🌐 Chrome', a: 1, why: 'Es una aplicación para navegar.' },
-      { t: '🖨️ Driver de la impresora', a: 0, why: 'Permite al sistema comunicarse con el <u>Hardware</u>.' }, { t: '🎨 Photoshop', a: 1, why: 'Aplicación de edición de imágenes.' },
-      { t: '🍎 macOS', a: 0, why: 'Es un <u>Operating System</u>.' }, { t: '💬 WhatsApp', a: 1, why: 'Aplicación de mensajería.' },
-    ], ['<u>System software</u>', '<u>Application software</u>'], 'Clasifica el programa:');
-  } },
+  html: sec('¿Qué es?', `<p>Las instrucciones lógicas que le dicen al <u>Hardware</u> qué hacer.</p>`)
+   + sec('Dos familias', pts([['<u>System software</u>', 'Sistema operativo, drivers y utilidades.'], ['<u>Application software</u>', 'Apps de usuario: Excel, Chrome, WhatsApp.']]))
+   + sec('<u>Database</u> software', `<p>Un <u>DBMS</u> (MySQL, MongoDB) administra las bases de datos del Tema 3.</p>`) },
 
 /* ------------------------------------------------------------------ */
 'data': { color: C.terra, title: 'Datos · <u>Data</u>', sub: 'De hechos sueltos a conocimiento',
-  html: sec('Data → Information → Knowledge', `<p>Los <u>Data</u> son hechos sin contexto. Al procesarlos se vuelven <u>Information</u>, y al interpretarla se obtiene <u>Knowledge</u> para decidir. Pulsa «Procesar» y sube la pirámide:</p>
-    <div class="lab-box"><div class="chips" id="pyr"><span class="chipn" data-l="0"><u>Data</u></span><span class="arrow">➜</span><span class="chipn" data-l="1"><u>Information</u></span><span class="arrow">➜</span><span class="chipn" data-l="2"><u>Knowledge</u></span></div>
-    <div class="qcard" id="lvl">Datos de un paciente: 37.0 · 38.5 · 40.1</div>
-    <button class="btn" id="up">Procesar ▲</button><button class="btn" id="rs">↻ Reiniciar</button></div>`, 'INTERACTIVO')
-  + sec('Tipos de datos', pts([['<u>Structured</u>', 'Ordenados en tablas: ventas, inventarios (<u>Relational</u>).'], ['<u>Unstructured</u>', 'Sin formato fijo: fotos, videos, correos, redes sociales (<u>Non-Relational</u>).']]) + `<p>Los datos se guardan en una <u>Database</u>: <button class="link" data-open="t3">Tema 3 ▶</button></p>`),
-  init(r) {
-    const L = ['Datos de un paciente: 37.0 · 38.5 · 40.1', 'La temperatura subió 3.1 °C en 3 horas.', 'Hay fiebre en aumento: hay que avisar al médico y empezar tratamiento.'];
-    let l = 0; const t = $('#lvl', r);
-    const paint = () => { t.textContent = L[l]; r.querySelectorAll('[data-l]').forEach(c => c.classList.toggle('on', +c.dataset.l === l)); };
-    $('#up', r).onclick = () => { l = Math.min(2, l + 1); paint(); }; $('#rs', r).onclick = () => { l = 0; paint(); }; paint();
-  } },
+  html: sec('Data → Information → Knowledge', `<p>Hechos sueltos → datos con contexto → conocimiento para decidir.</p>
+    <p><b>Ejemplo:</b> 37.0 · 38.5 · 40.1 → subió 3.1 °C → fiebre: avisar al médico.</p>`)
+   + sec('Tipos', pts([['<u>Structured</u>', 'En tablas: ventas, inventarios (<u>Relational</u>).'], ['<u>Unstructured</u>', 'Sin formato fijo: fotos, videos, correos (<u>Non-Relational</u>).']]))
+   + sec('¿Dónde se guardan?', `<p>En una <u>Database</u> del Tema 3.</p>`) },
 
 /* ------------------------------------------------------------------ */
 'people': { color: C.terra, title: 'Personas · <u>People</u>', sub: 'Quienes usan, construyen y administran el sistema',
-  html: sec('Roles principales', pts([['<u>End user</u>', 'Usa el sistema en su trabajo diario.'], ['<u>Developer</u>', 'Programa y mantiene las aplicaciones.'], ['<u>DBA</u>', '<u>Database Administrator</u>: cuida las bases de datos.'], ['<u>Systems Analyst</u>', 'Traduce necesidades del negocio a requisitos.'], ['<u>IT Manager</u>', 'Dirige el equipo, el presupuesto y la estrategia.']]))
-  + sec('Juego: ¿quién lo hace?', `<div id="qz"></div>`, 'INTERACTIVO'),
-  init(r) {
-    quiz($('#qz', r), [
-      { t: 'Registra las ventas en la caja de la tienda', a: 0, why: 'Usa el sistema para su trabajo.' },
-      { t: 'Programa nuevas funciones de la app', a: 1, why: 'Escribe código.' },
-      { t: 'Hace las copias de seguridad de la base de datos', a: 2, why: 'Administra y protege las bases de datos.' },
-      { t: 'Entrevista a los clientes y define qué debe hacer el sistema', a: 3, why: 'Conecta el negocio con la tecnología.' },
-      { t: 'Decide el presupuesto de tecnología del año', a: 4, why: 'Dirige el área de TI.' },
-    ], ['<u>End user</u>', '<u>Developer</u>', '<u>DBA</u>', '<u>Analyst</u>', '<u>IT Manager</u>'], 'Elige el rol:');
-  } },
+  html: sec('Roles principales', pts([['<u>End user</u>', 'Usa el sistema a diario.'], ['<u>Developer</u>', 'Programa y mantiene apps.'], ['<u>DBA</u>', 'Administra las bases de datos.'], ['<u>Systems Analyst</u>', 'Traduce necesidades a requisitos.'], ['<u>IT Manager</u>', 'Dirige equipo, presupuesto y estrategia.']])) },
 
 /* ------------------------------------------------------------------ */
 'proc': { color: C.terra, title: 'Procesos · <u>Processes</u>', sub: 'Los pasos que organizan el trabajo',
-  html: sec('¿Qué son?', `<p>Un <u>Process</u> (o <u>Business Process</u>) es una <b>secuencia ordenada de pasos</b> que convierte entradas en resultados: políticas, procedimientos y flujos de trabajo (<u>workflows</u>). Sin procesos, el <u>Hardware</u>, el <u>Software</u> y las <u>People</u> no saben coordinarse.</p>`)
-  + sec('Ordena el proceso de compra en línea', `<p>Toca los pasos <b>en el orden correcto</b>:</p><div class="chips" id="pool"></div>
-    <div class="lab-box"><b>Tu orden:</b><div class="chips" id="seq" style="min-height:62px"></div></div><div class="fb" id="of"></div><button class="btn" id="rs">↻ Reiniciar</button>`, 'INTERACTIVO'),
-  init(r) {
-    const STEPS = ['1 · Elegir el producto', '2 · Pagar', '3 · Validar el pago', '4 · Preparar el envío', '5 · Entregar al cliente'];
-    const order = [3, 1, 4, 0, 2];
-    let next = 0; const pool = $('#pool', r), seq = $('#seq', r), of = $('#of', r);
-    const strip = s => s.replace(/^\d · /, '');
-    function paint() {
-      pool.innerHTML = order.filter(i => i >= next || false).length ? order.map(i => `<button class="btn" data-i="${i}" ${i < next ? 'style="display:none"' : ''}>${strip(STEPS[i])}</button>`).join('') : '';
-      seq.innerHTML = STEPS.slice(0, next).map(s => `<span class="chipn on">${s}</span>`).join('');
-      pool.querySelectorAll('.btn').forEach(b => b.onclick = () => {
-        if (+b.dataset.i === next) { next++; of.innerHTML = next === 5 ? '<span class="ok">🎉 ¡Proceso completo! Cada paso depende del anterior.</span>' : '<span class="ok">✔ Bien, sigue…</span>'; paint(); }
-        else { b.classList.add('shake'); of.innerHTML = '<span class="bad">✘ Ese paso aún no toca. ¿Qué pasa primero?</span>'; setTimeout(() => b.classList.remove('shake'), 400); }
-      });
-    }
-    $('#rs', r).onclick = () => { next = 0; of.innerHTML = ''; paint(); }; paint();
-  } },
+  html: sec('¿Qué son?', `<p>Secuencia ordenada de pasos que convierte entradas en resultados: políticas, procedimientos y <u>workflows</u>.</p>`)
+   + sec('Ejemplo: compra en línea', `<p>1. Elegir producto → 2. Pagar → 3. Validar pago → 4. Preparar envío → 5. Entregar.</p>`) },
 };
 
 /* map click on hub for third-party keyboard use is handled by the delegated listener above */
