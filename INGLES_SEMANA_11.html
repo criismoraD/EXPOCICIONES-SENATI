@@ -33,14 +33,6 @@
   .hub .tt { font:700 31px/1.15 Georgia,serif; margin-top:3px; }
   .root .tt { font:700 52px/1 Georgia,serif; }
   .root .st { font-size:23px; margin-top:8px; opacity:.95; }
-  .art { position:absolute; border:0; background:transparent; cursor:pointer; border-radius:18px; transition:transform .18s, box-shadow .18s; padding:0; font-family:inherit; }
-  .art:hover, .art:focus-visible { transform:scale(1.04); outline:none; box-shadow:0 0 0 5px #e3a72f; }
-  .art::after { content:"▶"; position:absolute; right:-8px; top:-8px; width:28px; height:28px; border-radius:50%; background:#e3a72f; font-size:12px; display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.35); animation:ping 2.4s infinite; }
-  .cap { position:absolute; left:0; right:0; bottom:-34px; text-align:center; font:700 23px Georgia,serif; color:var(--ink); }
-  .card { position:absolute; padding:14px 22px; font-size:23px; line-height:1.3; box-sizing:border-box; }
-  .card h4 { font:700 29px Georgia,serif; margin:0 0 8px; }
-  .card p { margin:7px 0; }
-  .dot { display:inline-block; width:20px; height:20px; border-radius:50%; margin-right:10px; vertical-align:-3px; }
 
   /* ---------- panel ---------- */
   #panel { position:absolute; inset:0; background:rgba(30,26,22,.62); display:none; z-index:20; }
@@ -158,28 +150,21 @@ const C = { paper:'#f3ebda', ink:'#2a2622', blue:'#2f5f8f', blueM:'#6d9bc4', blu
 
 /* ---------- geometry of the map (shared by paint + DOM) ---------- */
 const NODES = [
-  { id:'root', kind:'root', x:720, y:450, w:400, h:130, tt:'Temas 3 y 4', st:'Datos y sistemas de información' },
-  { id:'t3', kind:'hub', br:'A', x:720, y:225, w:790, h:102, lab:'TEMA 3', tt:'Bases de datos: <u>Relational</u> vs <u>Non-Relational</u>' },
-  { id:'t4', kind:'hub', br:'B', x:720, y:675, w:790, h:102, lab:'TEMA 4', tt:'Componentes de los <u>Information Systems</u>' },
-  { id:'rel',   kind:'leaf', br:'A', x:250,  y:72, w:420, h:108, t1:'Modelo relacional', t2:'<u>Relational</u> · <u>SQL</u>' },
-  { id:'nosql', kind:'leaf', br:'A', x:720,  y:72, w:420, h:108, t1:'Modelo no relacional', t2:'<u>Non-Relational</u> · <u>NoSQL</u>' },
-  { id:'cmp',   kind:'leaf', br:'A', x:1190, y:72, w:420, h:108, t1:'Comparación', t2:'¿Cuál elegir y cuándo?' },
-  { id:'hw',    kind:'leaf', br:'B', x:150,  y:830, w:266, h:104, t1:'<u>Hardware</u>', t2:'Equipo físico' },
-  { id:'sw',    kind:'leaf', br:'B', x:435,  y:830, w:266, h:104, t1:'<u>Software</u>', t2:'Programas' },
-  { id:'data',  kind:'leaf', br:'B', x:720,  y:830, w:266, h:104, t1:'Datos', t2:'(<u>Data</u>)' },
-  { id:'people',kind:'leaf', br:'B', x:1005, y:830, w:266, h:104, t1:'Personas', t2:'(<u>People</u>)' },
-  { id:'proc',  kind:'leaf', br:'B', x:1290, y:830, w:266, h:104, t1:'Procesos', t2:'(<u>Processes</u>)' },
+  { id:'root', kind:'root', x:720, y:449, w:460, h:150, tt:'Temas 3 y 4', st:'Datos y sistemas de información' },
+  { id:'t3', kind:'hub', br:'A', x:720, y:261, w:1000, h:106, lab:'TEMA 3', tt:'Bases de datos: <u>Relational</u> vs <u>Non-Relational</u>' },
+  { id:'t4', kind:'hub', br:'B', x:720, y:637, w:1000, h:106, lab:'TEMA 4', tt:'Componentes de los <u>Information Systems</u>' },
+  { id:'rel',   kind:'leaf', br:'A', x:250,  y:89, w:440, h:118, t1:'Modelo relacional', t2:'<u>Relational</u> · <u>SQL</u>' },
+  { id:'nosql', kind:'leaf', br:'A', x:720,  y:89, w:440, h:118, t1:'Modelo no relacional', t2:'<u>Non-Relational</u> · <u>NoSQL</u>' },
+  { id:'cmp',   kind:'leaf', br:'A', x:1190, y:89, w:440, h:118, t1:'Comparación', t2:'¿Cuál elegir y cuándo?' },
+  { id:'hw',    kind:'leaf', br:'B', x:152,  y:809, w:266, h:118, t1:'<u>Hardware</u>', t2:'Equipo físico' },
+  { id:'sw',    kind:'leaf', br:'B', x:436,  y:809, w:266, h:118, t1:'<u>Software</u>', t2:'Programas' },
+  { id:'data',  kind:'leaf', br:'B', x:720,  y:809, w:266, h:118, t1:'Datos', t2:'(<u>Data</u>)' },
+  { id:'people',kind:'leaf', br:'B', x:1004, y:809, w:266, h:118, t1:'Personas', t2:'(<u>People</u>)' },
+  { id:'proc',  kind:'leaf', br:'B', x:1288, y:809, w:266, h:118, t1:'Procesos', t2:'(<u>Processes</u>)' },
 ];
 const NB = Object.fromEntries(NODES.map(n => [n.id, n]));
 const icSize = n => n.br === 'A' ? 84 : 66;
 const icCenter = n => [n.x - n.w/2 + 16 + icSize(n)/2, n.y];
-// big illustrations (hotspots): id, rect, caption, opens
-const ARTS = [
-  { id:'artRel',  x:30,   y:150, w:290, h:132, cap:'Tablas + llaves',   open:'rel' },
-  { id:'artDoc',  x:1120, y:150, w:290, h:132, cap:'Documentos + grafos', open:'nosql' },
-  { id:'artHw',   x:30,   y:605, w:290, h:126, cap:'Equipos + servidores', open:'hw' },
-  { id:'artPpl',  x:1120, y:605, w:290, h:126, cap:'Personas + engranes', open:'people' },
-];
 const CROPS = {};   // id -> dataURL of painted image (cropped from the canvas)
 
 /* ---------- build DOM for the map ---------- */
@@ -192,16 +177,6 @@ const stage = document.getElementById('stage');
     else if (n.kind === 'hub') html += `<button class="node hub dark" data-open="${n.id}" style="${st}"><span class="lab">${n.lab}</span><span class="tt">${n.tt}</span></button>`;
     else html += `<button class="node leaf ${n.br}" data-open="${n.id}" style="${st}padding-left:${icSize(n)+30}px;"><span class="t1">${n.t1}</span><span class="t2">${n.t2}</span></button>`;
   }
-  for (const a of ARTS) html += `<button class="art" data-open="${a.open}" style="left:${a.x}px;top:${a.y}px;width:${a.w}px;height:${a.h}px" aria-label="${a.cap}"><span class="cap">${a.cap}</span></button>`;
-  html += `<div class="card" style="left:30px;top:350px;width:440px;height:215px;">
-      <h4>Cómo leer este mapa</h4>
-      <p><u>Subrayado</u> = término técnico que se queda en inglés.</p>
-      <p>Toca cualquier nodo ▶ para ver su explicación y probar ejemplos.</p></div>
-    <div class="card" style="left:970px;top:350px;width:440px;height:215px;">
-      <h4>Colores del mapa</h4>
-      <p><span class="dot" style="background:${C.blue}"></span>Tema 3 · Bases de datos</p>
-      <p><span class="dot" style="background:${C.terra}"></span>Tema 4 · Sistemas de información</p>
-      <p><span class="dot" style="background:${C.ochre}"></span>Ejemplos interactivos ▶</p></div>`;
   stage.insertAdjacentHTML('afterbegin', html);
 })();
 
@@ -331,61 +306,6 @@ function iCycle(cx, cy, s, col) {
   glaze(ep(cx, cy, s*.09, s*.09, 12), C.blue, 220, 2, .5);
 }
 
-/* ----- big illustrations ----- */
-function tableArt(x, y, w, h, hdr, tint, rows = 3, cols = 3) {
-  glaze(rp(x, y, w, h), tint, 140, 3, 2);
-  glaze(rp(x, y, w, h * .26), hdr, 200, 3, 1.5);
-  pl(rp(x, y, w, h), C.ink, .9, '2B', true);
-  const rh = h / (rows + 1);
-  for (let i = 1; i <= rows; i++) pl([[x, y + rh * i], [x + w, y + rh * i]], C.ink, .6);
-  for (let j = 1; j < cols; j++) pl([[x + w / cols * j, y], [x + w / cols * j, y + h]], C.ink, .6);
-}
-function artRel() {
-  tableArt(42, 160, 138, 104, C.blue, C.blueL, 3, 3);
-  tableArt(204, 188, 108, 80, C.terra, C.terraL, 2, 3);
-  // key relation
-  brush.set('marker', C.ochre, 1.3); brush.noFill();
-  brush.spline([[132, 210], [166, 198], [190, 216], [206, 228], [224, 236]], .6);
-  [[132, 210], [224, 236]].forEach(([px, py]) => { glaze(ep(px, py, 7, 7, 12), C.ochre, 230, 2, .6); pl(ep(px, py, 7, 7, 12), C.ink, .6, '2B', true); });
-  // little key
-  glaze(ep(70, 276, 8, 8, 12), C.ochre, 230, 2, .6); pl(ep(70, 276, 8, 8, 12), C.ink, .7, '2B', true);
-  pl([[78, 276], [116, 276]], C.ink, 1); pl([[104, 276], [104, 284]], C.ink, .8); pl([[112, 276], [112, 283]], C.ink, .8);
-}
-function artDoc() {
-  // document card with text lines
-  glaze(rr(1132, 160, 100, 112, 8), C.blueL, 150, 3, 2); pl(rr(1132, 160, 100, 112, 8), C.ink, .9, '2B', true);
-  glaze(rp(1132, 160, 100, 22), C.blue, 190, 2, 1);
-  brace(1150, 226, 70, 1, C.ink);
-  [0, 1, 2, 3, 4].forEach(i => pl([[1166, 196 + i * 15], [1166 + 46 - (i % 3) * 8, 196 + i * 15]], i % 2 ? C.terra : C.ink, .7));
-  // graph
-  const N = [[1290, 182, 15], [1362, 206, 12], [1328, 250, 17], [1274, 242, 10], [1390, 262, 9]];
-  [[0,1],[1,2],[2,3],[0,3],[0,2],[2,4],[1,4]].forEach(([a, b]) => pl([[N[a][0], N[a][1]], [N[b][0], N[b][1]]], C.ink, .7));
-  N.forEach(([x, y, r], i) => { glaze(ep(x, y, r, r, 16), [C.blue, C.terraM, C.ochre, C.blueM, C.green][i], 190, 3, 1.5); pl(ep(x, y, r, r, 16), C.ink, .8, '2B', true); });
-}
-function artHw() {
-  // monitor
-  glaze(rr(50, 612, 150, 92, 8), C.blueL, 200, 3, 1.5);
-  glaze(rr(58, 620, 134, 76, 4), C.blue, 130, 3, 1.5); glaze(rp(66, 630, 60, 6), C.ochre, 220, 2, 1);
-  [0, 1, 2].forEach(i => pl([[66, 646 + i*12], [66 + 90 - i*20, 646 + i*12]], C.cream, .7));
-  pl(rr(50, 612, 150, 92, 8), C.ink, 1, '2B', true);
-  pl([[112, 704], [106, 722]], C.ink, 1); pl([[138, 704], [144, 722]], C.ink, 1); pl([[90, 724], [160, 724]], C.ink, 1.1);
-  // server stack
-  [0, 1, 2].forEach(i => {
-    const y = 618 + i * 32;
-    glaze(rr(226, y, 84, 26, 4), [C.terraL, C.terraM, C.terraL][i], 190, 3, 1); pl(rr(226, y, 84, 26, 4), C.ink, .9, '2B', true);
-    glaze(ep(240, y + 13, 4.5, 4.5, 10), [C.green, C.ochre, C.green][i], 240, 2, .3);
-    pl([[256, y + 13], [296, y + 13]], C.ink, .6);
-  });
-}
-function artPeople() {
-  iPerson(1170, 676, 150, C.terra, C.terraL); iPerson(1245, 680, 130, C.blue, C.blueL); iPerson(1210, 690, 110, C.green, '#dbe7d6');
-  // gear
-  const gx = 1340, gy = 668;
-  for (let i = 0; i < 10; i++) { const a = i * 36; pl([[gx + 38*cos(a), gy + 38*sin(a)], [gx + 52*cos(a), gy + 52*sin(a)]], C.ink, 2.2); }
-  glaze(ep(gx, gy, 42, 42, 24), C.ochre, 190, 3, 1.5); pl(ep(gx, gy, 42, 42, 24), C.ink, 1, '2B', true);
-  glaze(ep(gx, gy, 15, 15, 14), C.paper, 255, 2, .5); pl(ep(gx, gy, 15, 15, 14), C.ink, .8, '2B', true);
-}
-
 /* ----- passes ----- */
 const ICONS = { rel: iCyl, nosql: iNoSql, cmp: iScale, hw: iChip, sw: iWindow, data: iBars, people: iPeople, proc: iCycle };
 let paperShader;
@@ -433,11 +353,12 @@ const PASSES = [
     for (const [a, b, br] of links) {
       const A = NB[a], B = NB[b], col = br === 'A' ? C.blue : C.terra;
       const up = B.y < A.y;
-      const ax = A.x + (B.id === 'rel' || B.id === 'hw' ? -140 : B.id === 'cmp' || B.id === 'proc' ? 140 : 0) * (A.kind === 'hub' ? 1 : 0);
-      const x1 = a === 'root' ? 720 : ax, y1 = A.y + (up ? -A.h/2 : A.h/2), x2 = B.x, y2 = B.y + (up ? B.h/2 : -B.h/2);
-      const my = (y1 + y2) / 2;
-      for (const [wc, name, c, wgt] of [[1, 'marker', col, 1.5], [1, '2B', C.ink, .9]])
-        { brush.set(name, c, wgt); brush.spline([[x1, y1], [x1, my + (y1 - y2) * .0], [x2, my], [x2, y2]], 1); }
+      const left = A.x - A.w/2 + 50, right = A.x + A.w/2 - 50;
+      const x1 = a === 'root' ? A.x : Math.max(left, Math.min(right, B.x));
+      const y1 = A.y + (up ? -A.h/2 : A.h/2), x2 = B.x, y2 = B.y + (up ? B.h/2 : -B.h/2);
+      const dy = y2 - y1;
+      for (const [name, c, wgt] of [['marker', col, 1.5], ['2B', C.ink, .9]])
+        { brush.set(name, c, wgt); brush.spline([[x1, y1], [x1, y1 + dy * .35], [x2, y2 - dy * .35], [x2, y2]], 1); }
     }
     brush.noField();
   },
@@ -481,19 +402,6 @@ const PASSES = [
     for (const id of ['hw', 'sw', 'data', 'people', 'proc']) { const n = NB[id], [cx, cy] = icCenter(n); ICONS[id](cx, cy, icSize(n), C.terra, C.terraL); }
     brush.noField();
   },
-  function artTop() { brush.field('hand'); artRel(); artDoc(); brush.noField(); },
-  function artBottom() { brush.field('hand'); artHw(); artPeople(); brush.noField(); },
-  function cards() {
-    for (const [x, y, w, h, c] of [[30, 350, 440, 215, C.blue], [970, 350, 440, 215, C.terra]]) {
-      glaze(rr(x, y, w, h, 20), '#fffaf0', 215, 3, 3);
-      brush.field('hand'); pl(rr(x, y, w, h, 20), c, 1.0, '2B', true); pl(rr(x + 3, y + 3, w, h, 20), C.ink, .4, 'HB', true); brush.noField();
-    }
-    // loose ink flourishes in the middle band
-    brush.field('waves');
-    brush.set('2B', C.blue, .6);  for (let i = 0; i < 5; i++) brush.flowLine(495, 365 + i * 17, 35, 0);
-    brush.set('2B', C.terra, .6); for (let i = 0; i < 5; i++) brush.flowLine(915, 365 + i * 17, 35, 180);
-    brush.noField();
-  },
   function paper() {
     paperShader.setUniform('seed', 7.0); paperShader.setUniform('tooth', 0.65); paperShader.setUniform('granulation', 0.55);
     filter(paperShader);
@@ -507,8 +415,6 @@ const PASSES = [
         c2.getContext('2d').drawImage(cv, x, y, w, h, 0, 0, w, h); CROPS[id] = c2.toDataURL('image/png');
       };
       for (const id of Object.keys(ICONS)) { const n = NB[id], [cx, cy] = icCenter(n); const s = icSize(n) + 14; grab(id, cx - s/2, cy - s/2, s, s); }
-      grab('t3', 30, 148, 290, 136); grab('t4', 30, 603, 290, 130);
-      grab('root-info', 1120, 148, 290, 136);
     } catch (e) { /* images are optional */ }
     if (window.__autoOpen) openPanel(window.__autoOpen);
   },
@@ -523,7 +429,7 @@ function setup() {
   brush.scaleBrushes(4.5);
   paperShader = createFilterShader(PAPER_FRAG);
   document.querySelector('#stage canvas').style.zIndex = 0;
-  document.querySelectorAll('.node,.art,.card').forEach(e => e.style.zIndex = 2);
+  document.querySelectorAll('.node').forEach(e => e.style.zIndex = 2);
 }
 function draw() {
   translate(-W / 2, -H / 2);
@@ -596,14 +502,14 @@ const tbl = (head, rows, cls = '', attr = () => '') => `<table class="db ${cls}"
 
 const PANELS = {
 /* ------------------------------------------------------------------ */
-'root-info': { color: '#2b3556', title: 'Temas 3 y 4 · Visión general', sub: 'Datos y <u>Information Systems</u>', img: 'root-info',
+'root-info': { color: '#2b3556', title: 'Temas 3 y 4 · Visión general', sub: 'Datos y <u>Information Systems</u>',
   html: sec('Cómo se conectan los dos temas', `<p>Todo <u>Information System</u> necesita guardar <u>Data</u>. El <b>Tema 3</b> explica <i>cómo</i> se guardan esos datos (<u>Relational</u> o <u>Non-Relational</u>) y el <b>Tema 4</b> explica <i>qué piezas</i> forman el sistema completo.</p>
    ${pts([['Tema 3', 'Bases de datos: tablas con <u>SQL</u> o modelos flexibles con <u>NoSQL</u>.'], ['Tema 4', 'Cinco componentes: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> y <u>Processes</u>.']])}
    <p>La <u>Database</u> es justo el punto donde ambos temas se tocan: es la parte del sistema donde viven los <u>Data</u>.</p>`)
    + sec('Ve a un tema', `<button class="btn" data-open="t3">Tema 3 · Bases de datos</button><button class="btn" data-open="t4" style="--c:#b9532f;border-color:#b9532f">Tema 4 · Componentes</button>`) },
 
 /* ------------------------------------------------------------------ */
-'t3': { color: C.blue, title: 'Tema 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub: 'Bases de datos: dos formas de organizar la información', img: 't3',
+'t3': { color: C.blue, title: 'Tema 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub: 'Bases de datos: dos formas de organizar la información',
   html: sec('La misma información, dos mundos', `<p>Elige un modelo y mira cómo se guarda <b>Ana</b> y <b>Luis</b>. Fíjate en las celdas vacías (<code>NULL</code>) del modelo relacional:</p>
    <button class="btn on" data-m="r">Relational (tablas)</button><button class="btn" data-m="n">Non-Relational (documentos)</button>
    <div class="lab-box" id="vs"></div><div class="fb" id="vsn"></div>`)
@@ -756,7 +662,7 @@ const PANELS = {
   } },
 
 /* ------------------------------------------------------------------ */
-'t4': { color: C.terra, title: 'Tema 4 · <u>Information Systems</u>', sub: 'Cinco componentes que trabajan juntos', img: 't4',
+'t4': { color: C.terra, title: 'Tema 4 · <u>Information Systems</u>', sub: 'Cinco componentes que trabajan juntos',
   html: sec('¿Qué es un <u>Information System</u>?', `<p>Es un conjunto de componentes que <b>recolecta, guarda, procesa y distribuye información</b> para apoyar decisiones y operaciones. Toca un componente para entrarle:</p>
     <div class="chips" id="comps"></div>`)
   + sec('Simulación: pedir un café desde el celular', `<p>Avanza paso a paso y mira qué componentes participan:</p>
