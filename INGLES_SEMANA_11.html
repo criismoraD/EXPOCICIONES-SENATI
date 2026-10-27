@@ -25,6 +25,8 @@
           background:#e3a72f; color:#2a2622; font-size:13px; display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.35);
           animation:ping 2.4s infinite; }
   @keyframes ping { 0%,100% { transform:scale(1);} 50% { transform:scale(1.18);} }
+  .node.static { cursor:default; pointer-events:none; }
+  .node.static::after { display:none; }
   .leaf { display:flex; flex-direction:column; justify-content:center; }
   .leaf .t1 { font:700 29px/1.1 Georgia,"Times New Roman",serif; }
   .leaf .t2 { font-size:23px; margin-top:5px; line-height:1.15; }
@@ -216,7 +218,7 @@ function buildMap() {
   for (const n of NODES) {
     const l = L[n.id];
     const st = `left:${n.x-n.w/2}px;top:${n.y-n.h/2}px;width:${n.w}px;height:${n.h}px;`;
-    if (n.kind === 'root') html += `<button class="node root dark" data-open="root-info" style="${st}" aria-label="${bare(l.tt)}"><span class="tt">${l.tt}</span><span class="st">${l.st}</span></button>`;
+    if (n.kind === 'root') html += `<div class="node root dark static" style="${st}"><span class="tt">${l.tt}</span><span class="st">${l.st}</span></div>`;
     else if (n.kind === 'hub') html += `<button class="node hub dark" data-open="${n.id}" style="${st}"><span class="lab">${l.lab}</span><span class="tt">${l.tt}</span></button>`;
     else html += `<button class="node leaf ${n.br}" data-open="${n.id}" style="${st}padding-left:${icSize(n)+30}px;"><span class="t1">${l.t1}</span><span class="t2">${l.t2}</span></button>`;
   }
@@ -564,15 +566,6 @@ const gar = (x1, y1, x2, y2, c = '#2a2622') => `<path d="M${x1} ${y1}L${x2} ${y2
 const gdot = (x, y, r = 9, fill = '#c3d7e8') => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="#2a2622" stroke-width="2"/>`;
 
 const FIGS = {
-  root: c => fig(`
-    ${bx(150, 6, 360, 46, '#235283', 10)}${gtx(330, 36, c.fA, 17, '#fff6e4')}
-    ${bx(210, 82, 240, 46, '#2b3556', 10)}${gtx(330, 112, c.fB, 17, '#fff6e4')}
-    ${bx(150, 158, 360, 46, '#a34a29', 10)}${gtx(330, 188, c.fC, 17, '#fff6e4')}
-    ${gln(330, 52, 330, 82)}${gln(330, 128, 330, 158)}
-    ${gdot(96, 29)}${gln(105, 29, 150, 29)}${gdot(96, 181, 9, '#f4d3b8')}${gln(105, 181, 150, 181)}
-    ${gdot(564, 29, 9, '#c3d7e8')}${gln(510, 29, 555, 29)}${gdot(564, 181, 9, '#f4d3b8')}${gln(510, 181, 555, 181)}
-  `, c.cap),
-
   rel: c => fig(`
     ${bx(28, 54, 342, 118, '#f8fbfd', 6)}
     ${bx(28, 54, 342, 32, '#2f5f8f', 6)}
@@ -678,17 +671,6 @@ const FIGS = {
    ===================================================================== */
 const COPY = {
 en: {
-  'root-info': {
-    title:'Topics 3 & 4 · Overview', sub:'Data and <u>Information Systems</u>', eyebrow:'THE MAP',
-    h1:'In one line', p1:'Topic 3 stores the <u>Data</u>; Topic 4 explains the parts of an <u>Information System</u>.',
-    cap:'One map, two topics: the data on one side, the whole system on the other.',
-    fA:'TOPIC 3', fB:'Topics 3 & 4', fC:'TOPIC 4',
-    h2:'The two topics',
-    c1t:'Topic 3', c1d:'Databases: <u>Relational</u> (tables + <u>SQL</u>) or <u>Non-Relational</u> (<u>NoSQL</u>).',
-    c2t:'Topic 4', c2d:'Five parts: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> and <u>Processes</u>.',
-    note:'The <u>Database</u> is where both topics meet: it is the part of the system where the <u>Data</u> lives.',
-    b1:'Topic 3 · Databases', b2:'Topic 4 · Components'
-  },
   't3': {
     title:'Topic 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub:'Databases: two ways to organise information', eyebrow:'TOPIC 3 · DATABASES',
     h1:'Two ways to store', p1:'Same people, different <u>Schema</u>. Switch the model:',
@@ -784,17 +766,6 @@ en: {
   },
 },
 es: {
-  'root-info': {
-    title:'Temas 3 y 4 · Visión general', sub:'Datos y <u>Information Systems</u>', eyebrow:'EL MAPA',
-    h1:'En una frase', p1:'El <b>Tema 3</b> guarda los <u>Data</u>; el <b>Tema 4</b> explica las piezas del <u>Information System</u>.',
-    cap:'Un mapa, dos temas: los datos por un lado y el sistema completo por el otro.',
-    fA:'TEMA 3', fB:'Temas 3 y 4', fC:'TEMA 4',
-    h2:'Los dos temas',
-    c1t:'Tema 3', c1d:'Bases de datos: <u>Relational</u> (tablas + <u>SQL</u>) o <u>Non-Relational</u> (<u>NoSQL</u>).',
-    c2t:'Tema 4', c2d:'Cinco componentes: <u>Hardware</u>, <u>Software</u>, <u>Data</u>, <u>People</u> y <u>Processes</u>.',
-    note:'La <u>Database</u> es el punto donde ambos temas se tocan: es la parte del sistema donde viven los <u>Data</u>.',
-    b1:'Tema 3 · Bases de datos', b2:'Tema 4 · Componentes'
-  },
   't3': {
     title:'Tema 3 · <u>Relational</u> vs <u>Non-Relational</u>', sub:'Bases de datos: dos formas de organizar la información', eyebrow:'TEMA 3 · BASES DE DATOS',
     h1:'Dos formas de guardar', p1:'Misma información, distinto <u>Schema</u>. Cambia el modelo:',
@@ -897,19 +868,11 @@ es: {
 const toggleCls = (btns, fn) => btns.forEach(b => b.onclick = () => { btns.forEach(x => x.classList.remove('on')); b.classList.add('on'); fn(b); });
 
 const PANEL_DEFS = {
-  'root-info': { color:'#2b3556',
-    build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
-      html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.root(c)
-        + sec(c.h2, pts([[c.c1t, c.c1d], [c.c2t, c.c2d]]))
-        + noteBox(c.note)
-        + `<p style="margin-top:12px"><button class="btn" data-open="t3">${c.b1}</button><button class="btn" data-open="t4" style="--c:#b9532f;border-color:#b9532f">${c.b2}</button></p>` }) },
-
   't3': { color:C.blue,
     build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
       html: sec(c.h1, `<p>${c.p1}</p>
         <button class="btn on" data-m="r">${c.bR}</button><button class="btn" data-m="n">${c.bN}</button>
         <div class="lab-box" id="vs"></div>`)
-        + sec(c.h2, `<button class="btn" data-open="rel">${c.b1}</button><button class="btn" data-open="nosql">${c.b2}</button><button class="btn" data-open="cmp">${c.b3}</button>`)
         + noteBox(c.note) }),
     init(r, c) {
       const vs = $('#vs', r);
@@ -950,12 +913,7 @@ const PANEL_DEFS = {
   't4': { color:C.terra,
     build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
       html: sec(c.h1, `<p>${c.p1}</p>`) + FIGS.t4(c)
-        + sec(c.h2, `<p>${c.p2}</p><div class="chips" id="comps"></div>`)
-        + noteBox(c.note) }),
-    init(r) {
-      const C5 = [['hw', 'Hardware'], ['sw', 'Software'], ['data', 'Data'], ['people', 'People'], ['proc', 'Processes']];
-      $('#comps', r).innerHTML = C5.map(([id, n]) => `<span class="chipn chipimg" data-c="${id}" data-open="${id}">${CROPS[id] ? `<img src="${CROPS[id]}" alt="">` : ''}<u>${n}</u></span>`).join('');
-    } },
+        + noteBox(c.note) }) },
 
   'hw': { color:C.terra,
     build: c => ({ title:c.title, sub:c.sub, eyebrow:c.eyebrow,
