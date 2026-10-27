@@ -6,11 +6,16 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 ---
 
+## 🚀 Exposición Destacada (Semana 11)
+
+| Curso | Tema | Enlace Directo |
+| :--- | :--- | :--- |
+| **Inglés** | Mapa Mental Interactivo · Temas 3 y 4 (Bases de datos y SI) | [Ver Exposición](./INGLES_SEMANA_11.html) |
+
 ## 🚀 Exposiciones Destacadas (Semana 10)
 
 | Curso | Tema | Enlace Directo |
 | :--- | :--- | :--- |
-| **Empleabilidad** | Inteligencia Emocional en Equipos Scrum | [Ver Exposición](./INGELIGENCIA_EMOCIONAL_EMPLEABILIDAD_SEMANA_10.html) |
 | **Inglés** | Mapa Mental · OOP en PHP & XML en SQL Server | [Ver Exposición](./INGLES_SEMANA_10.html) |
 | **Empleabilidad** | Normalización y Calidad • Distribución de Frecuencias | [Ver Exposición](./CALIDAD_TOTAL_10.html) |
 
@@ -30,6 +35,7 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 Ubicadas en la carpeta [`ANTERIORES/`](./ANTERIORES/):
 
+- **Semana 10 - Empleabilidad:** [Inteligencia Emocional en Equipos Scrum](./ANTERIORES/INGELIGENCIA_EMOCIONAL_EMPLEABILIDAD_SEMANA_10.html)
 - **Semana 09 - Empleabilidad:** [Ciberseguridad y Ética · Ejemplo animado en RRHH](./ANTERIORES/ciberseguridad_etica_ia_rrhh_EMPLEABILIDAD_SEMANA09.html)
 - **Semana 09 - Seminario:** [Ramas en Git · Trabajo en equipo](./ANTERIORES/RAMAS-GIT_SEMINARIO_SEMANA09.html)
 - **Semana 08 - Seminario:** [IoT en la Agricultura de Precisión](./ANTERIORES/SEMANA08_IOT_AGRICULTURA_PRECISION_SEMINARIO.html)
