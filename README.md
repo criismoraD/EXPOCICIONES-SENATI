@@ -6,18 +6,19 @@ Portal web y repositorio oficial de presentaciones y exposiciones para el ciclo 
 
 ---
 
-## 🚀 Exposición Destacada (Semana 11)
+## 🚀 Exposición Destacada (Semana 12)
+
+| Curso | Tema | Enlace Directo |
+| :--- | :--- | :--- |
+| **Empleabilidad** | Mapa Mental · Nómadas Digitales, Inglés y Teletrabajo | [Ver Exposición](./EMPLEABILIDAD_SEMANA_12_INGLES_EN_EL_TELETRABAJO.html) |
+
+## 🚀 Exposiciones Destacadas (Semanas 10 y 11)
 
 | Curso | Tema | Enlace Directo |
 | :--- | :--- | :--- |
 | **Inglés** | Mapa Mental Interactivo · Temas 3 y 4 (Bases de datos y SI) | [Ver Exposición](./INGLES_SEMANA_11.html) |
-
-## 🚀 Exposiciones Destacadas (Semana 10)
-
-| Curso | Tema | Enlace Directo |
-| :--- | :--- | :--- |
 | **Inglés** | Mapa Mental · OOP en PHP & XML en SQL Server | [Ver Exposición](./INGLES_SEMANA_10.html) |
-| **Empleabilidad** | Normalización y Calidad • Distribución de Frecuencias | [Ver Exposición](./CALIDAD_TOTAL_10.html) |
+| **Empleabilidad** | Normalización y Calidad • Distribución de Frecuencias | [Ver Exposición](./ANTERIORES/CALIDAD_TOTAL_10.html) |
 
 ---
 
